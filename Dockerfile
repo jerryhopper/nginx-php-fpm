@@ -70,10 +70,10 @@ RUN ls -latr /etc/cron.d \
 
 
 # Supervisor config
-#ADD ./supervisord.conf /etc/supervisord.conf
+ADD ./supervisord.conf /etc/supervisord.conf
 
 # Override nginx's default config
-#ADD ./default.conf /etc/nginx/conf.d/default.conf
+ADD ./default.conf /etc/nginx/conf.d/default.conf
 
 # Override default nginx welcome page
 ADD ./code /usr/share/nginx/html
