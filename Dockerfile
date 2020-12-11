@@ -11,7 +11,7 @@ LABEL maintainer="JH hopper.jerry@gmail.com"
 #ENV COMPOSER_VERSION 1.10.17
 
 #RUN addgroup --gid 101 nginx 
-#RUN adduser --home /home/nginx --uid 101 --gid 101 nginx 
+#RUN adduser --home /home/nginx cron 
 
 #ADD crontab /etc/cron.d/hello-cron
 # Give execution rights on the cron job
@@ -25,9 +25,9 @@ RUN apt-get update && apt-get install -q -y cron nano
 
 RUN ls -latr /etc/cron.d
 
-RUN su - nginx -c "curl https://get.acme.sh | sh" 
+#RUN su - nginx -c "curl https://get.acme.sh | sh" 
 
-RUN ls -latr /etc/cron.d
+#RUN ls -latr /etc/cron.d
 
 ## ENVIROMENT VARIABLES
 ARG CF_Token
@@ -59,6 +59,7 @@ ENV OAUTH_REDIR_URL=$OAUTH_REDIR_URL
 
 RUN ls -latr /home \
     && mkhomedir_helper nginx \
+    && su - nginx -c "mkdir -p /home/nginx" \
     && su - nginx -c "curl https://get.acme.sh | sh" \
     && ls -latr /etc/cron.d \
     # Clean up
