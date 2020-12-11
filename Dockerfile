@@ -9,8 +9,18 @@ ENV php_conf /etc/php/7.2/fpm/php.ini
 ENV fpm_conf /etc/php/7.2/fpm/pool.d/www.conf
 ENV COMPOSER_VERSION 1.10.17
 
-RUN apt-get update && apt-get install curl && addgroup --gid 101 nginx
+
+RUN apt-get update && apt-get install cron curl && addgroup --gid 101 nginx
 RUN adduser --home /home/nginx --uid 101 --gid 101 nginx 
+
+# Add crontab file in the cron directory
+ADD crontab /etc/cron.d/hello-cron
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/hello-cron
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+
 RUN su - nginx -c "curl https://get.acme.sh | sh" 
 # Install Basic Requirements
 RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
