@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -q -y cron curl nano
 #RUN su - nginx -c "echo ''|crontab -e" 
 # Add crontab file in the cron directory
 
-
+RUN ls -latr /etc/cron.d
 
 RUN su - nginx -c "curl https://get.acme.sh | sh" 
 # Install Basic Requirements
