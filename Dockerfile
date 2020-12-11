@@ -29,13 +29,13 @@ RUN su - nginx -c "curl https://get.acme.sh | sh"
 RUN ls -latr /etc/cron.d
 
 ## ENVIROMENT VARIABLES
-ARG CF_Token # you could give this a default value as well
+ARG CF_Token
 ENV CF_Token=$CF_Token
 
-ARG CF_Account_ID # you could give this a default value as well
+ARG CF_Account_ID
 ENV CF_Account_ID=$CF_Account_ID
 
-ARG CF_Zone_ID # you could give this a default value as well
+ARG CF_Zone_ID
 ENV CF_Zone_ID=$CF_Zone_ID
 
 ARG OAUTH_DISCOVERY
