@@ -25,6 +25,9 @@ RUN apt-get update && apt-get install -q -y cron curl nano
 RUN ls -latr /etc/cron.d
 
 RUN su - nginx -c "curl https://get.acme.sh | sh" 
+
+RUN ls -latr /etc/cron.d
+
 # Install Basic Requirements
 RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
     && set -x \
