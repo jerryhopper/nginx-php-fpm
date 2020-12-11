@@ -28,6 +28,17 @@ RUN su - nginx -c "curl https://get.acme.sh | sh"
 
 RUN ls -latr /etc/cron.d
 
+## ENVIROMENT VARIABLES
+ARG CF_Token # you could give this a default value as well
+ENV CF_Token=$CF_Token
+
+ARG CF_Account_ID # you could give this a default value as well
+ENV CF_Account_ID=$CF_Account_ID
+
+ARG CF_Zone_ID # you could give this a default value as well
+ENV CF_Zone_ID=$CF_Zone_ID
+
+
 # Install Basic Requirements
 RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
     && set -x \
