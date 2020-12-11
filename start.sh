@@ -18,7 +18,7 @@ chown -Rf nginx.nginx /home/nginx/.acme.sh/$SSL_WILDCARD_DOM
 # export CF_Token=""
 # export CF_Account_ID=""
 # export CF_Zone_ID=""
-if [ "$CF_TOKEN" != "" ];then
+if [ "$SSL_WILDCARD_DOM" != "" ];then
   if [ ! -f "/home/nginx/.acme.sh/$SSL_WILDCARD_DOM/$SSL_WILDCARD_DOM.cer" ];then
     su - nginx -c "export CF_Token="$CF_TOKEN" && export CF_Account_ID="$CF_ACCOUNT_ID" && export CF_Zone_ID="$CF_ZONE_ID" && /home/nginx/.acme.sh/acme.sh --log --issue -d $SSL_WILDCARD_DOM  -d *.$SSL_WILDCARD_DOM  --dns dns_cf"
   fi
