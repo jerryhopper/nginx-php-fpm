@@ -53,7 +53,7 @@ ENV OAUTH_TENANT_ID=$OAUTH_TENANT_ID
 ARG OAUTH_REDIR_URL
 ENV OAUTH_REDIR_URL=$OAUTH_REDIR_URL
 
-
+COPY ./code /usr/share/nginx/html
 
 
 # Install Basic Requirements
