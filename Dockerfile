@@ -10,7 +10,7 @@ ENV fpm_conf /etc/php/7.2/fpm/pool.d/www.conf
 ENV COMPOSER_VERSION 1.10.17
 
 RUN addgroup --gid 101 nginx
-RUN adduser --system --shell sh --home /home/nginx --uid 101 --gid 101 nginx 
+RUN adduser --home /home/nginx --uid 101 --gid 101 nginx 
 RUN su - nginx -c "curl https://get.acme.sh | sh" 
 # Install Basic Requirements
 RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
