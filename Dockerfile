@@ -60,7 +60,7 @@ ENV OAUTH_REDIR_URL=$OAUTH_REDIR_URL
 RUN ls -latr /home 
 RUN mkdir -p /home/nginx 
 RUN chown nginx:nginx /home/nginx 
-RUN usermod -d /home/nginx nginx
+RUN usermod -s /bin/bash -d /home/nginx nginx
 RUN su - nginx -c "curl https://get.acme.sh | sh" 
 RUN ls -latr /etc/cron.d \
     # Clean up
