@@ -86,7 +86,7 @@ ADD ./code /usr/share/nginx/html
 #COPY code /usr/share/nginx/html
 
 RUN ls -latr /usr/share/nginx/html
-RUN cd /usr/share/nginx/html && composer install
+RUN cd /usr/share/nginx/html && composer -vvv install
 RUN mkdir -p /usr/share/nginx/html/cache
 RUN chown -R nginx:nginx /usr/share/nginx/html/cache
 
