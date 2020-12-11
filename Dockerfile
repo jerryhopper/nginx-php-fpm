@@ -57,12 +57,12 @@ ENV OAUTH_REDIR_URL=$OAUTH_REDIR_URL
 #COPY ./code /usr/share/nginx/html
 #sudo usermod -d /var/lib/mysql/ mysql
 
-RUN ls -latr /home \
-    && mkdir -p /home/nginx \
-    && chown nginx:nginx /home/nginx \
-    && usermod -d /home/nginx nginx \
-    && su - nginx -c "curl https://get.acme.sh | sh" \
-    && ls -latr /etc/cron.d \
+RUN ls -latr /home 
+RUN mkdir -p /home/nginx 
+RUN chown nginx:nginx /home/nginx 
+RUN usermod -d /home/nginx nginx
+RUN su - nginx -c "curl https://get.acme.sh | sh" 
+RUN ls -latr /etc/cron.d \
     # Clean up
     && apt-get clean \
     && apt-get autoremove \
