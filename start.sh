@@ -16,7 +16,7 @@ chown -Rf nginx.nginx /usr/share/nginx/html
 # export CF_Token=""
 # export CF_Account_ID=""
 # export CF_Zone_ID=""
-if [ CF_Token != "" ];then
+if [ "$CF_Token" != "" ];then
   su - nginx -c "export CF_Token="$CF_Token" && export CF_Account_ID="$CF_Account_ID" && export CF_Zone_ID="$CF_Zone_ID" && /home/nginx/.acme.sh/acme.sh --log --issue -d ssl.dockbox.nl  -d '*.ssl.dockbox.nl'  --dns dns_cf"
 fi
 
