@@ -12,11 +12,11 @@ ENV COMPOSER_VERSION 1.10.17
 RUN addgroup --gid 101 nginx 
 RUN adduser --home /home/nginx --uid 101 --gid 101 nginx 
 
-ADD crontab /etc/cron.d/hello-cron
+#ADD crontab /etc/cron.d/hello-cron
 # Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/hello-cron
+#RUN chmod 0644 /etc/cron.d/hello-cron
 # Create the log file to be able to run tail
-RUN touch /var/log/cron.log
+#RUN touch /var/log/cron.log
 
 RUN apt-get update && apt-get install -q -y cron curl nano
 #RUN su - nginx -c "echo ''|crontab -e" 
@@ -53,7 +53,7 @@ ENV OAUTH_TENANT_ID=$OAUTH_TENANT_ID
 ARG OAUTH_REDIR_URL
 ENV OAUTH_REDIR_URL=$OAUTH_REDIR_URL
 
-COPY ./code /usr/share/nginx/html
+#COPY ./code /usr/share/nginx/html
 
 
 # Install Basic Requirements
@@ -161,8 +161,8 @@ ADD ./supervisord.conf /etc/supervisord.conf
 ADD ./default.conf /etc/nginx/conf.d/default.conf
 
 # Override default nginx welcome page
-ADD code /usr/share/nginx/html
-COPY code /usr/share/nginx/html
+#ADD code /usr/share/nginx/html
+#COPY code /usr/share/nginx/html
 
 # Add Scripts
 ADD ./start.sh /start.sh
