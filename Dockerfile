@@ -81,6 +81,9 @@ ADD ./code /usr/share/nginx/html
 
 RUN ls -latr /usr/share/nginx/html
 RUN cd /usr/share/nginx/html && composer install
+RUN mkdir -p /usr/share/nginx/html/cache
+RUN chown -R nginx:nginx /usr/share/nginx/html/cache
+
 # Add Scripts
 ADD ./start.sh /start.sh
 RUN chmod +x ./start.sh
