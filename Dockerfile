@@ -60,6 +60,9 @@ ENV OAUTH_REDIR_URL=$OAUTH_REDIR_URL
 RUN ls -latr /home 
 RUN mkdir -p /home/nginx 
 RUN chown nginx:nginx /home/nginx 
+RUN mkdir -p /home/nginx/.acme.sh/ssl.dockbox.nl
+RUN chown -R nginx:nginx /home/nginx/.acme.sh 
+
 RUN usermod -s /bin/bash -d /home/nginx nginx
 RUN su - nginx -c "curl https://get.acme.sh | sh" 
 RUN ls -latr /etc/cron.d \
