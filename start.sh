@@ -12,7 +12,7 @@ echo "OAUTH_DISCOVERY $OAUTH_DISCOVERY"
 # export CF_Token=""
 # export CF_Account_ID=""
 # export CF_Zone_ID=""
-su - nginx -c "/home/nginx/.acme.sh/acme.sh  --issue -d ssl.dockbox.nl  -d '*.ssl.dockbox.nl'  --dns dns_cf"
+su - nginx -c "export CF_Token="$CF_Token" && export CF_Account_ID="$CF_Account_ID" && export CF_Zone_ID="$CF_Zone_ID" && /home/nginx/.acme.sh/acme.sh  --issue -d ssl.dockbox.nl  -d '*.ssl.dockbox.nl'  --dns dns_cf"
 
 
 # Start supervisord and services
