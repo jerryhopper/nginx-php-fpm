@@ -7,6 +7,8 @@ sed -i -e "s/worker_processes  1/worker_processes $procs/" /etc/nginx/nginx.conf
 # Always chown webroot for better mounting
 chown -Rf nginx.nginx /usr/share/nginx/html
 
+
+echo "OAUTH_DISCOVERY $OAUTH_DISCOVERY"
 # export CF_Token=""
 # export CF_Account_ID=""
 # export CF_Zone_ID=""
