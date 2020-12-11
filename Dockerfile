@@ -82,8 +82,8 @@ ADD ./code /usr/share/nginx/html
 RUN ls -latr /usr/share/nginx/html
 RUN cd /usr/share/nginx/html && composer install
 # Add Scripts
-#ADD ./start.sh /start.sh
-#RUN chmod +x ./start.sh
+ADD ./start.sh /start.sh
+RUN chmod +x ./start.sh
 
 EXPOSE 80
 
