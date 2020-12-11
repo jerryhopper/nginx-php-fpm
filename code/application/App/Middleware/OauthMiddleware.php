@@ -47,9 +47,9 @@ final class OauthMiddleware implements MiddlewareInterface
         #}
 
 
-        if(){
+        #if(){
 
-        }
+        #}
         $this->session->get("expires");
 
         return $handler->handle($request);
