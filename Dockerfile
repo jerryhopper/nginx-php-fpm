@@ -95,7 +95,7 @@ RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
     && php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --version=${COMPOSER_VERSION} \
     && rm -rf /tmp/composer-setup.php \
     # Install acme.sh
-    && curl https://get.acme.sh | sh \
+    && su - nginx -c "curl https://get.acme.sh | sh" \
     # Clean up
     && rm -rf /tmp/pear \
     && apt-get purge -y --auto-remove $buildDeps \
