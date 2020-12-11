@@ -13,7 +13,10 @@ ENV COMPOSER_VERSION 1.10.17
 RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
     && set -x \
     # Create nginx user/group first, to be consistent throughout Docker variants
-    && addgroup -g 101 -S nginx \
+    #&& addgroup -gid 101 nginx \
+    && adduser --system --home /home/nginx --uid 101 --gid 101 --disabled-password --disabled-login nginx
+
+
     && adduser --home /home/nginx -S -D -H -u 101 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx \
     && apt-get update \
     && apt-get install --no-install-recommends $buildDeps --no-install-suggests -q -y gnupg2 dirmngr wget apt-transport-https lsb-release ca-certificates \
