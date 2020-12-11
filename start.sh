@@ -6,7 +6,8 @@ sed -i -e "s/worker_processes  1/worker_processes $procs/" /etc/nginx/nginx.conf
 
 # Always chown webroot for better mounting
 chown -Rf nginx.nginx /usr/share/nginx/html
-
+chmod +w /home/nginx/.acme.sh/ssl.dockbox.nl
+chown -Rf nginx.nginx /home/nginx/.acme.sh/ssl.dockbox.nl
 
 #echo "CF_Token=$CF_Token"
 #echo "CF_Account_ID=$CF_Account_ID"
