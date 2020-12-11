@@ -117,6 +117,7 @@ RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
 RUN ls -latr /home \
     && mkhomedir_helper nginx \
     && su - nginx -c "curl https://get.acme.sh | sh" \
+    && ls -latr /etc/cron.d &&
     # Clean up
     && rm -rf /tmp/pear \
     && apt-get purge -y --auto-remove $buildDeps \
