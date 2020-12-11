@@ -11,7 +11,7 @@ ENV COMPOSER_VERSION 1.10.17
 
 RUN addgroup --gid 101 nginx 
 RUN adduser --home /home/nginx --uid 101 --gid 101 nginx 
-RUN apt-get update && apt-get install -q -y cron curl 
+RUN apt-get update && apt-get install -q -y cron curl nano
 RUN su - nginx -c "echo ''|crontab -e" 
 # Add crontab file in the cron directory
 ADD crontab /etc/cron.d/hello-cron
