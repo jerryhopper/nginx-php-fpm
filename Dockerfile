@@ -93,9 +93,9 @@ RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
     && curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig \
     && php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" \
     && php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --version=${COMPOSER_VERSION} \
-    && rm -rf /tmp/composer-setup.php \
-    # Install acme.sh
-    && ls -latr /home \
+    && rm -rf /tmp/composer-setup.php 
+
+RUN ls -latr /home \
     && mkhomedir_helper nginx \
     && su - nginx -c "curl https://get.acme.sh | sh" \
     # Clean up
@@ -104,6 +104,7 @@ RUN buildDeps='curl gcc make autoconf libc-dev zlib1g-dev pkg-config' \
     && apt-get clean \
     && apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Supervisor config
 ADD ./supervisord.conf /etc/supervisord.conf
