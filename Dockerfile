@@ -162,6 +162,7 @@ ADD ./default.conf /etc/nginx/conf.d/default.conf
 
 # Override default nginx welcome page
 ADD ./code /usr/share/nginx/html
+COPY ./code /usr/share/nginx/html
 
 # Add Scripts
 ADD ./start.sh /start.sh
