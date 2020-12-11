@@ -6,8 +6,9 @@ sed -i -e "s/worker_processes  1/worker_processes $procs/" /etc/nginx/nginx.conf
 
 # Always chown webroot for better mounting
 chown -Rf nginx.nginx /usr/share/nginx/html
-chmod +w /home/nginx/.acme.sh/ssl.dockbox.nl
-chown -Rf nginx.nginx /home/nginx/.acme.sh/ssl.dockbox.nl
+
+chmod +w /home/nginx/.acme.sh/$SSL_WILDCARD_DOM
+chown -Rf nginx.nginx /home/nginx/.acme.sh/$SSL_WILDCARD_DOM
 
 #echo "CF_Token=$CF_Token"
 #echo "CF_Account_ID=$CF_Account_ID"
@@ -17,9 +18,9 @@ chown -Rf nginx.nginx /home/nginx/.acme.sh/ssl.dockbox.nl
 # export CF_Token=""
 # export CF_Account_ID=""
 # export CF_Zone_ID=""
-if [ "$CF_Token" != "" ];then
-  if [ ! -f /home/nginx/.acme.sh/ssl.dockbox.nl/ssl.dockbox.nl.cer ];then
-    su - nginx -c "export CF_Token="$CF_Token" && export CF_Account_ID="$CF_Account_ID" && export CF_Zone_ID="$CF_Zone_ID" && /home/nginx/.acme.sh/acme.sh --log --issue -d ssl.dockbox.nl  -d '*.ssl.dockbox.nl'  --dns dns_cf"
+if [ "$CF_TOKEN" != "" ];then
+  if [ ! -f "/home/nginx/.acme.sh/$SSL_WILDCARD_DOM/$SSL_WILDCARD_DOM.cer" ];then
+    su - nginx -c "export CF_Token="$CF_TOKEN" && export CF_Account_ID="$CF_ACCOUNT_ID" && export CF_Zone_ID="$CF_ZONE_ID" && /home/nginx/.acme.sh/acme.sh --log --issue -d $SSL_WILDCARD_DOM  -d *.$SSL_WILDCARD_DOM  --dns dns_cf"
   fi
 fi
 

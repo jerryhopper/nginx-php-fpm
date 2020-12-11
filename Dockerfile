@@ -10,8 +10,8 @@ LABEL maintainer="JH hopper.jerry@gmail.com"
 #ENV fpm_conf /etc/php/7.2/fpm/pool.d/www.conf
 #ENV COMPOSER_VERSION 1.10.17
 
-#RUN addgroup --gid 101 nginx 
-#RUN adduser --home /home/nginx cron 
+#RUN addgroup --gid 101 nginx
+#RUN adduser --home /home/nginx cron
 
 #ADD crontab /etc/cron.d/hello-cron
 # Give execution rights on the cron job
@@ -20,24 +20,24 @@ LABEL maintainer="JH hopper.jerry@gmail.com"
 #RUN touch /var/log/cron.log
 
 RUN apt-get update && apt-get install -q -y cron nano curl
-#RUN su - nginx -c "echo ''|crontab -e" 
+#RUN su - nginx -c "echo ''|crontab -e"
 # Add crontab file in the cron directory
 
 RUN ls -latr /etc/cron.d
 
-#RUN su - nginx -c "curl https://get.acme.sh | sh" 
+#RUN su - nginx -c "curl https://get.acme.sh | sh"
 
 #RUN ls -latr /etc/cron.d
 
 ## ENVIROMENT VARIABLES
 ARG CF_Token
-ENV CF_Token=$CF_Token
+ENV CF_TOKEN=$CF_Token
 
 ARG CF_Account_ID
-ENV CF_Account_ID=$CF_Account_ID
+ENV CF_ACCOUNT_ID=$CF_Account_ID
 
 ARG CF_Zone_ID
-ENV CF_Zone_ID=$CF_Zone_ID
+ENV CF_ZONE_ID=$CF_Zone_ID
 
 ARG OAUTH_DISCOVERY
 ENV OAUTH_DISCOVERY=$OAUTH_DISCOVERY
@@ -54,17 +54,20 @@ ENV OAUTH_TENANT_ID=$OAUTH_TENANT_ID
 ARG OAUTH_REDIR_URL
 ENV OAUTH_REDIR_URL=$OAUTH_REDIR_URL
 
+ARG SSL_WILDCARD_DOM
+ENV SSL_WILDCARD_DOM=$SSL_WILDCARD_DOM
+
 #COPY ./code /usr/share/nginx/html
 #sudo usermod -d /var/lib/mysql/ mysql
 
-RUN ls -latr /home 
-RUN mkdir -p /home/nginx 
-RUN chown nginx:nginx /home/nginx 
+RUN ls -latr /home
+RUN mkdir -p /home/nginx
+RUN chown nginx:nginx /home/nginx
 RUN mkdir -p /home/nginx/.acme.sh/ssl.dockbox.nl
-RUN chown -R nginx:nginx /home/nginx/.acme.sh 
+RUN chown -R nginx:nginx /home/nginx/.acme.sh
 
 RUN usermod -s /bin/bash -d /home/nginx nginx
-RUN su - nginx -c "curl https://get.acme.sh | sh" 
+RUN su - nginx -c "curl https://get.acme.sh | sh"
 RUN ls -latr /etc/cron.d \
     # Clean up
     && apt-get clean \
