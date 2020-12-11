@@ -136,6 +136,7 @@ COPY ./code /usr/share/nginx/html
 
 # Add Scripts
 ADD ./start.sh /start.sh
+RUN chmod +x ./start.sh
 
 EXPOSE 80
 
