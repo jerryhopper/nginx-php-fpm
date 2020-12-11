@@ -19,7 +19,7 @@ LABEL maintainer="JH hopper.jerry@gmail.com"
 # Create the log file to be able to run tail
 #RUN touch /var/log/cron.log
 
-RUN apt-get update && apt-get install -q -y cron nano
+RUN apt-get update && apt-get install -q -y cron nano curl
 #RUN su - nginx -c "echo ''|crontab -e" 
 # Add crontab file in the cron directory
 
