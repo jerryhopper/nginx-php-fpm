@@ -10,7 +10,7 @@ ENV fpm_conf /etc/php/7.2/fpm/pool.d/www.conf
 ENV COMPOSER_VERSION 1.10.17
 
 
-RUN apt-get update && apt-get install -q -y cron curl && addgroup --gid 101 nginx
+RUN apt-get update && apt-get install -q -y cron curl 
 RUN adduser --home /home/nginx --uid 101 --gid 101 nginx 
 
 # Add crontab file in the cron directory
