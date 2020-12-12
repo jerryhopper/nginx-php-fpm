@@ -64,7 +64,7 @@ final class HttpsMiddleware implements MiddlewareInterface
         }
 
         if( ! empty($request->getHeader("X-Forwarded-Proto") ) ){
-            $proto = $request->getHeader("X-Forwarded-Proto");
+            $proto = $request->getHeader("X-Forwarded-Proto")[0];
             error_log("X-Forwarded-Proto not empty! (".$request->getHeader("X-Forwarded-Proto").")");
             error_log(json_encode( $request->getHeader("X-Forwarded-Proto") )) ;
 
@@ -73,14 +73,14 @@ final class HttpsMiddleware implements MiddlewareInterface
         }
 
         if( ! empty($request->getHeader("X-Forwarded-Scheme") ) ){
-            $proto =$request->getHeader("X-Forwarded-Scheme");
+            $proto =$request->getHeader("X-Forwarded-Scheme")[0];
             error_log("X-Forwarded-Scheme not empty! (".$request->getHeader("X-Forwarded-Scheme").")");
             error_log(json_encode( $request->getHeader("X-Forwarded-Scheme") )) ;
         }else{
             error_log("X-Forwarded-Scheme empty");
         }
 
- 
+
 
         error_log("proto: ".$proto);
         error_log("get: ".$uri->getHost());
