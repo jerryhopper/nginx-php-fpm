@@ -50,31 +50,43 @@ final class HttpsMiddleware implements MiddlewareInterface
         # [X-Forwarded-For] => 163.158.92.255
         # [X-Forwarded-Proto] => https
         # [X-Forwarded-Scheme] => https
+        error_log("Middleware");
 
         $uri = $request->getUri();
 
         $proto = $uri->getScheme();
 
         if( $_SERVER['HTTPS']=="On"){
+            error_log("_SERVER['HTTPS']==\"On\"");
             $proto = "https";
+        }else{
+            error_log("_SERVER['HTTPS']==$_SERVER['HTTPS']");
         }
 
         if( ! empty($request->getHeader("X-Forwarded-Proto") ) ){
             $proto = $request->getHeader("X-Forwarded-Proto");
+            error_log("X-Forwarded-Proto not empty! (".$request->getHeader("X-Forwarded-Proto").")");
+        }else{
+            error_log("X-Forwarded-Proto empty ");
         }
 
         if( ! empty($request->getHeader("X-Forwarded-Scheme") ) ){
             $proto =$request->getHeader("X-Forwarded-Scheme");
+            error_log("X-Forwarded-Scheme not empty! (".$request->getHeader("X-Forwarded-Scheme").")");
+        }else{
+            error_log("X-Forwarded-Scheme empty");
         }
 
 
 
+        error_log("proto: ".$proto);
+        error_log("get: ".$uri->getHost());
 
         if ($uri->getHost() !== 'localhost' && $proto !== 'https') {
             $url = (string)$uri->withScheme('https')->withPort(443);
 
             $response = $this->responseFactory->createResponse();
-
+            error_log("redirect");
             // Redirect
             $response = $response->withStatus(302)->withHeader('Location', $url);
 
