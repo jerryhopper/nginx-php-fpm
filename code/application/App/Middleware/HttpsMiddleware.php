@@ -80,7 +80,7 @@ final class HttpsMiddleware implements MiddlewareInterface
             error_log("X-Forwarded-Scheme empty");
         }
 
-
+ 
 
         error_log("proto: ".$proto);
         error_log("get: ".$uri->getHost());
