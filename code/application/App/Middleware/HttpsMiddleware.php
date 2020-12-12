@@ -50,7 +50,14 @@ final class HttpsMiddleware implements MiddlewareInterface
         # [X-Forwarded-For] => 163.158.92.255
         # [X-Forwarded-Proto] => https
         # [X-Forwarded-Scheme] => https
+
+        $uri = $request->getUri();
+
         $proto = $uri->getScheme();
+
+        if( $_SERVER['HTTPS']=="On"){
+            $proto = "https";
+        }
 
         if( ! empty($request->getHeader("X-Forwarded-Proto") ) ){
             $proto = $request->getHeader("X-Forwarded-Proto");
@@ -60,7 +67,7 @@ final class HttpsMiddleware implements MiddlewareInterface
             $proto =$request->getHeader("X-Forwarded-Scheme");
         }
 
-        $uri = $request->getUri();
+
 
 
         if ($uri->getHost() !== 'localhost' && $proto !== 'https') {

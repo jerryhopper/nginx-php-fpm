@@ -93,8 +93,7 @@ $app->group('/', function (RouteCollectorProxy $group) {
     #$group->get('users-get', HomeController::class)->setName('users-get');
     #$group->get('hello/{name}', HelloController::class)->setName('hello');
     #$group->get('exception-demo', ExceptionDemoController::class)->setName('exception-demo');
-});
-// ->add(HttpsMiddleware::class)
+})->add(HttpsMiddleware::class);
 
 
 
