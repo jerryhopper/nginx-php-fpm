@@ -121,7 +121,6 @@ $app->group('/users/', function (RouteCollectorProxy $group) {
 
 
 
-
 $app->group('/oauth2/', function (RouteCollectorProxy $group) {
 
     //$group->get('login', \App\Action\OauthLoginAction::class)->setName('oauth-login');
