@@ -26,6 +26,12 @@ final class SessionMiddleware implements MiddlewareInterface
     ): ResponseInterface {
         $this->session->start();
 
+        //error_log("For ".json_encode( $request->getHeaders("X-Forwarded-For") ));
+
+        error_log("Proto ".json_encode(empty($request->getHeader("X-Forwarded-Proto") ) ));
+        error_log("Scheme ".json_encode(empty($request->getHeader("X-Forwarded-Scheme") ) ));
+
+
         return $handler->handle($request);
     }
 }

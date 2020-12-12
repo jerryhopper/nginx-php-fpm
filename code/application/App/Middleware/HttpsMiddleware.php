@@ -40,9 +40,30 @@ final class HttpsMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
+
+
+        //error_log("For ".json_encode( $request->getHeaders("X-Forwarded-For") ));
+        //error_log("Proto ".json_encode($request->getHeaders("X-Forwarded-Proto") ));
+        //error_log("Scheme ".json_encode($request->getHeaders("X-Forwarded-Scheme") ));
+
+
+        # [X-Forwarded-For] => 163.158.92.255
+        # [X-Forwarded-Proto] => https
+        # [X-Forwarded-Scheme] => https
+        $proto = $uri->getScheme();
+
+        if( ! empty($request->getHeader("X-Forwarded-Proto") ) ){
+            $proto = $request->getHeader("X-Forwarded-Proto");
+        }
+
+        if( ! empty($request->getHeader("X-Forwarded-Scheme") ) ){
+            $proto =$request->getHeader("X-Forwarded-Scheme");
+        }
+
         $uri = $request->getUri();
 
-        if ($uri->getHost() !== 'localhost' && $uri->getScheme() !== 'https') {
+
+        if ($uri->getHost() !== 'localhost' && $proto !== 'https') {
             $url = (string)$uri->withScheme('https')->withPort(443);
 
             $response = $this->responseFactory->createResponse();
