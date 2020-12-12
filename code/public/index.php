@@ -14,11 +14,13 @@ use App\Controllers\OauthCallbackController;
 
 
 #use App\Action\LogoutAction;
+
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 
+use App\Middleware\HttpsMiddleware;
 use App\Middleware\SessionMiddleware;
 use App\Middleware\UserAuthMiddleware;
 use App\Middleware\OauthMiddleware;
@@ -92,7 +94,7 @@ $app->group('/', function (RouteCollectorProxy $group) {
     #$group->get('hello/{name}', HelloController::class)->setName('hello');
     #$group->get('exception-demo', ExceptionDemoController::class)->setName('exception-demo');
 });
-
+// ->add(HttpsMiddleware::class)
 
 
 
@@ -104,7 +106,7 @@ $app->group('/dashboard/', function (RouteCollectorProxy $group) {
 
 
 })->add(UserAuthMiddleware::class);
-
+// ->add(HttpsMiddleware::class)
 
 
 

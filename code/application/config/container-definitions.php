@@ -7,7 +7,10 @@ use App\Preferences;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
+use Slim\App;
+use Slim\Factory\AppFactory;
 use Slim\Views\Twig;
 
 #use League\OAuth2\Client\Provider\GenericProvider;
@@ -29,7 +32,14 @@ return [
         return AppFactory::create();
     },
 */
+    ResponseFactoryInterface::class => function (ContainerInterface $container) {
+        return $container->get(App::class)->getResponseFactory();
+    },
+    App::class => function (ContainerInterface $container) {
+        AppFactory::setContainer($container);
 
+        return AppFactory::create();
+    },
     FusionAuth::class => function (ContainerInterface $container): FusionAuth {
         // Get the preferences from the container.
         $preferences = $container->get(Preferences::class);
