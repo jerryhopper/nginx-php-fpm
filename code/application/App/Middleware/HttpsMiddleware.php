@@ -50,40 +50,46 @@ final class HttpsMiddleware implements MiddlewareInterface
         # [X-Forwarded-For] => 163.158.92.255
         # [X-Forwarded-Proto] => https
         # [X-Forwarded-Scheme] => https
-        error_log("Middleware");
+        #error_log("Middleware");
 
         $uri = $request->getUri();
 
         $proto = $uri->getScheme();
 
-        if( $_SERVER['HTTPS']=="On"){
-            error_log("_SERVER['HTTPS']==\"On\"");
-            $proto = "https";
-        }else{
-            error_log("_SERVER['HTTPS']==".$_SERVER['HTTPS']);
+        if (array_key_exists('HTTPS',$_SERVER)){
+            if( $_SERVER['HTTPS']=="On"){
+                #error_log("_SERVER['HTTPS']==\"On\"");
+                $proto = "https";
+            }
         }
+
+        #else{
+        #    error_log("_SERVER['HTTPS']==".$_SERVER['HTTPS']);
+        #}
 
         if( ! empty($request->getHeader("X-Forwarded-Proto") ) ){
             $proto = $request->getHeader("X-Forwarded-Proto")[0];
-            error_log("X-Forwarded-Proto not empty! (".$request->getHeader("X-Forwarded-Proto").")");
-            error_log(json_encode( $request->getHeader("X-Forwarded-Proto") )) ;
+            #error_log("X-Forwarded-Proto not empty! (".$request->getHeader("X-Forwarded-Proto").")");
+            #error_log(json_encode( $request->getHeader("X-Forwarded-Proto") )) ;
 
-        }else{
-            error_log("X-Forwarded-Proto empty ");
         }
+        #else{
+        #    error_log("X-Forwarded-Proto empty ");
+        #}
 
         if( ! empty($request->getHeader("X-Forwarded-Scheme") ) ){
             $proto =$request->getHeader("X-Forwarded-Scheme")[0];
-            error_log("X-Forwarded-Scheme not empty! (".$request->getHeader("X-Forwarded-Scheme").")");
-            error_log(json_encode( $request->getHeader("X-Forwarded-Scheme") )) ;
-        }else{
-            error_log("X-Forwarded-Scheme empty");
+            #error_log("X-Forwarded-Scheme not empty! (".$request->getHeader("X-Forwarded-Scheme").")");
+            #error_log(json_encode( $request->getHeader("X-Forwarded-Scheme") )) ;
         }
+        #else{
+        #    error_log("X-Forwarded-Scheme empty");
+        #}
 
 
 
-        error_log("proto: ".$proto);
-        error_log("get: ".$uri->getHost());
+        #error_log("proto: ".$proto);
+        #error_log("get: ".$uri->getHost());
 
         if ($uri->getHost() !== 'localhost' && $proto !== 'https') {
             $url = (string)$uri->withScheme('https')->withPort(443);
