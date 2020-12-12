@@ -60,7 +60,7 @@ final class HttpsMiddleware implements MiddlewareInterface
             error_log("_SERVER['HTTPS']==\"On\"");
             $proto = "https";
         }else{
-            error_log("_SERVER['HTTPS']==$_SERVER['HTTPS']");
+            error_log("_SERVER['HTTPS']==".$_SERVER['HTTPS']);
         }
 
         if( ! empty($request->getHeader("X-Forwarded-Proto") ) ){
@@ -78,7 +78,7 @@ final class HttpsMiddleware implements MiddlewareInterface
         }
 
 
- 
+
         error_log("proto: ".$proto);
         error_log("get: ".$uri->getHost());
 
