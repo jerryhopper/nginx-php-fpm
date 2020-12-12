@@ -74,14 +74,14 @@ final class OauthCallbackAction
         $data['expires']=$token->getExpires();
 
 
-        error_log( "expires:".$token->getExpires());
-        error_log( "token:".$token->getToken());
-        error_log( "expired:".$token->hasExpired());
-        error_log( "getrefreshtoken:".json_encode($token->getRefreshToken() ) );
+        //error_log( "expires:".$token->getExpires());
+        //error_log( "token:".$token->getToken());
+        //error_log( "expired:".$token->hasExpired());
+        //error_log( "getrefreshtoken:".json_encode($token->getRefreshToken() ) );
 
 
-        error_log( json_encode($token->getValues() ) );
-        error_log( json_encode($user->toArray() ) );
+        //error_log( json_encode($token->getValues() ) );
+        //error_log( json_encode($user->toArray() ) );
         //$user->toArray()['sub']
 
 
