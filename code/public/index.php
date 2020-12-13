@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\ContainerFactory;
+use App\Controllers\Api\LocalDnsController;
 use App\Controllers\ExceptionDemoController;
 use App\Controllers\HelloController;
 use App\Controllers\HomeController;
@@ -35,6 +36,13 @@ $rootPath = realpath(__DIR__ . '/..');
 
 // Include the composer autoloader.
 include_once($rootPath . '/vendor/autoload.php');
+
+
+
+// Crazy workaround for some unknown autoloader issue.
+require_once($rootPath . '/vendor/cloudflare/sdk/src/Auth/APIToken.php');
+require_once($rootPath . '/vendor/cloudflare/sdk/src/Endpoints/Zones.php');
+
 
 // Create the container for dependency injection.
 try {
@@ -96,6 +104,13 @@ $app->group('/', function (RouteCollectorProxy $group) {
 })->add(HttpsMiddleware::class);
 
 
+$app->group('/api/', function (RouteCollectorProxy $group) {
+
+    $group->get('localdns', LocalDnsController::class)->setName('api-localdns');
+
+})->add(HttpsMiddleware::class);
+
+
 
 $app->group('/dashboard/', function (RouteCollectorProxy $group) {
     // ...
@@ -106,6 +121,8 @@ $app->group('/dashboard/', function (RouteCollectorProxy $group) {
 
 })->add(UserAuthMiddleware::class);
 // ->add(HttpsMiddleware::class)
+
+
 
 
 
