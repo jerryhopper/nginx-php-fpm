@@ -125,6 +125,13 @@ final class OauthCallbackAction
 
         if ($user) {
             // Login successfully
+            if ( $request->getQueryParams()['userState'] == "AuthenticatedNotRegistered" ){
+
+
+            }else{
+
+            }
+
             // Clears all session data and regenerates session ID
             $this->session->invalidate();
             $this->session->start();
