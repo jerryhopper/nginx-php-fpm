@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Controllers\Api\LocalDnsController;
 use App\Controllers\ExceptionDemoController;
 use App\Controllers\HelloController;
 use App\Controllers\HomeController;
@@ -18,19 +19,29 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
 
-return [
+return array(
     ExceptionDemoController::class => function (ContainerInterface $container): ExceptionDemoController {
         return new ExceptionDemoController();
     },
-        /*
-    HelloController::class => function (ContainerInterface $container): HelloController {
-        return new HelloController(
+    LocalDnsController::class => function (ContainerInterface $container): LocalDnsController {
+        return new LocalDnsController(
             $container->get(Twig::class),
-            $container->get(LoggerInterface::class),
+            $container->get(Preferences::class),
             $container->get(Session::class),
             $container->get(FusionAuth::class)
         );
-    },*/
+    },
+
+
+    /*
+HelloController::class => function (ContainerInterface $container): HelloController {
+    return new HelloController(
+        $container->get(Twig::class),
+        $container->get(LoggerInterface::class),
+        $container->get(Session::class),
+        $container->get(FusionAuth::class)
+    );
+},*/
 
     LoginController::class => function (ContainerInterface $container): LoginController {
         return new LoginController(
@@ -65,6 +76,4 @@ return [
     } */
 
 
-
-
-];
+);

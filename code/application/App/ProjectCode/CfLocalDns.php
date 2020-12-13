@@ -1,7 +1,17 @@
 <?php
-
 namespace App\ProjectCode;
 
+
+#;
+#use CloudFlare\API\Endpoints\Zones;
+#use CloudFlare\API\Endpoints\DNS;
+#use Cloudflare\API\Adapter\Guzzle;
+
+
+use Cloudflare\API\Adapter\Guzzle;
+use Cloudflare\API\Auth\APIToken;
+use Cloudflare\API\Endpoints\DNS;
+use Cloudflare\API\Endpoints\Zones;
 
 class CfLocalDns {
 
@@ -11,22 +21,24 @@ class CfLocalDns {
 
     function __construct($apitoken,$zoneid)
     {
+
+
         $this->zoneid = $zoneid;
-        $key     = new Cloudflare\API\Auth\APIToken ( $apitoken);
-        $adapter = new Cloudflare\API\Adapter\Guzzle($key);
-        $this->zones    = new Cloudflare\API\Endpoints\Zones($adapter);
-        $this->dns    = new Cloudflare\API\Endpoints\DNS($adapter);
+        $key     = new APIToken ( $apitoken );
+        $adapter = new Guzzle($key);
+        $this->zones    = new Zones($adapter);
+        $this->dns    = new DNS($adapter);
 
     }
     private function testIp($ipadress){
         if (!filter_var($ipadress, FILTER_VALIDATE_IP))  {
-            throw new Exception( "$ipadress is not a valid IP address" );
+            throw new \Exception( "$ipadress is not a valid IP address" );
         }
         if (filter_var($ipadress, FILTER_FLAG_NO_PRIV_RANGE ))  {
-            throw new Exception( "$ipadress is outside PRIV_RANGE" );
+            throw new \Exception( "$ipadress is outside PRIV_RANGE" );
         }
         if ( explode(".",$ipadress)[0]=="127" ){
-            throw new Exception( "$ipadress is in a reserved range (127.0.0.0–127.255.255.255)" );
+            throw new \Exception( "$ipadress is in a reserved range (127.0.0.0–127.255.255.255)" );
         }
 
         return $ipadress;
@@ -35,7 +47,7 @@ class CfLocalDns {
     function addPrivateIp($ipadress){
         $this->testIp($ipadress);
         $dashedhostname = str_replace(".","-", $ipadress).".ssl";
-        $this->dns->addRecord($this->zoneid, "A", $dashedhostname, $ipadress,0,false, $priority = '', $data = [] );
+        return $this->dns->addRecord($this->zoneid, "A", $dashedhostname, $ipadress,0,false, $priority = '', $data = [] );
     }
 
     function listPrivateIp($ipadress){

@@ -23,6 +23,9 @@ class Preferences
     private $oauthClientsecret;
     private $oauthTenantid;
 
+    private $cloudflareToken;
+    private $cloudflareZoneId;
+
 
     /**
      * Preferences constructor.
