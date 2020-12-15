@@ -77,7 +77,7 @@ $headersToInspect = [
     'Forwarded',
 ];
 $checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
-$trustedProxies = ['10.0.0.1', '172.24.0.1']; // Note: Never trust the IP address for security processes!
+$trustedProxies = ['172.24.0.1']; // Note: Never trust the IP address for security processes!
 $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies,'ip_address', $headersToInspect ));
 
 // Add the routing middleware.
