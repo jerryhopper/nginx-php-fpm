@@ -54,15 +54,15 @@ class UnregisteredDeviceController extends AbstractTwigController
 
     }
 
-    private function getIpFromDb($ipadress){
+    public function getIpFromDb($ipadress){
         return Capsule::table('unregdevice')->where('ext-ip', '=', $ipadress)->get();
     }
 
-    private function setIpInDb($intIP,$extIP){
+    public function setIpInDb($intIP,$extIP){
         return Capsule::table('unregdevice')->insert([ 'id'=>$extIP.'-'.$intIP , 'int-ip'=>$intIP , 'ext-ip' => $extIP ]);
     }
 
-    private function createTable (){
+    public function createTable (){
         Capsule::schema()->create('unregdevice', function ($table) {
             $table->string('id')->unique();
             $table->string('ext-ip');
@@ -111,6 +111,12 @@ class UnregisteredDeviceController extends AbstractTwigController
                         "h"=>$request->getHeader("User-Agent") );
 
 
+        Capsule::schema()->create('unregdevice', function ($table) {
+            $table->string('id')->unique();
+            $table->string('ext-ip');
+            $table->string('int-ip');
+            $table->timestamps();
+        });
 
         try{
             //$this->setIpInDb($net2[0],$ipAddress);
