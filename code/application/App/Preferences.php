@@ -39,8 +39,8 @@ class Preferences
 
         # CloudFlare
         $this->cloudflareToken = $_SERVER["CF_TOKEN"] ? $_SERVER["CF_TOKEN"] : null;
-        $this->cloudflareZoneId = $_SERVER["CF_ZONEID"] ? $_SERVER["CF_ZONEID"] : null;
-
+        $this->cloudflareZoneId = $_SERVER["CF_ZONE_ID"] ? $_SERVER["CF_ZONE_ID"] : null;
+        cloudflareZoneId
 
         # Oauth DiscoveryUrl
         $this->oauthDiscoveryurl = $_SERVER["OAUTH_DISCOVERY"] ? $_SERVER["OAUTH_DISCOVERY"] : null;
