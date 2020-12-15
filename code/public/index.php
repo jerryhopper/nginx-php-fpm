@@ -73,11 +73,8 @@ $app->add(SessionMiddleware::class); // <-- here
 //
 $headersToInspect = [
     'X-Real-IP',
-    'Forwarded',
     'X-Forwarded-For',
-    'X-Forwarded',
-    'X-Cluster-Client-Ip',
-    'Client-Ip',
+    'Forwarded',
 ];
 $checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
 $trustedProxies = ['10.0.0.1', '10.0.0.2']; // Note: Never trust the IP address for security processes!
