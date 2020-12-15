@@ -75,14 +75,15 @@ $app->add(SessionMiddleware::class); // <-- here
 //
 $headersToInspect = [
     'X-Real-IP',
+    'HTTP_X_FORWARDED_FOR',
     'X-Forwarded-For',
     'Forwarded',
 ];
-$checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
+$checkProxyHeaders = false; // Note: Never trust the IP address for security processes!
 $trustedProxies = $app->getContainer()->get(Preferences::class)->getTrustedProxies(); // Note: Never trust the IP address for security processes!
 error_log(json_encode($trustedProxies));
-//,'ip_address', $headersToInspect
-$app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies ));
+
+$app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies,'ip_address', $headersToInspect ));
 
 // Add the routing middleware.
 $app->addRoutingMiddleware();
