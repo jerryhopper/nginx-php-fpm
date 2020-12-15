@@ -74,9 +74,9 @@ $app->add(SessionMiddleware::class); // <-- here
 
 //
 $headersToInspect = [
+    'X-Forwarded-For',
     'X-Real-IP',
     'HTTP_X_FORWARDED_FOR',
-    'X-Forwarded-For',
     'Forwarded',
 ];
 $checkProxyHeaders = false; // Note: Never trust the IP address for security processes!
