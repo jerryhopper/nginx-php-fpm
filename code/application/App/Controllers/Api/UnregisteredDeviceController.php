@@ -53,6 +53,22 @@ class UnregisteredDeviceController extends AbstractTwigController
 
     }
 
+    private function getIpFromDb($ipadress){
+        return Capsule::table('unregdevice')->where('ext-ip', '=', $ipadress)->get();
+    }
+
+    private function setIpInDb($intIP,$extIP){
+        return Capsule::table('unregdevice')->insert(['ext-ip' => $extIP,'int-ip'=>$intIP ]);
+    }
+
+    private function createTable (){
+        Capsule::schema()->create('unregdevice', function ($table) {
+            $table->increments('id')->unique();
+            $table->string('ext-ip');
+            $table->string('int-ip');
+            $table->timestamps();
+        });
+    }
 
     /**
      * @param Request $request
@@ -63,7 +79,9 @@ class UnregisteredDeviceController extends AbstractTwigController
      */
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
-
+        ##
+        ##
+        ##
         #$ipadress = $request->getQueryParams()['ipadress'];
 
         if ( $request->getHeader("User-Agent")[0]=="OSBox" ){
@@ -81,24 +99,15 @@ class UnregisteredDeviceController extends AbstractTwigController
         $net2 = explode(",",$net2);
 
 
-        $res = array("eth0"=> $net1,"eth1"=> $net2,"extip"=>$ipAddress,"h"=>$request->getHeader("User-Agent"));
-
-        #$x= class_exists("Cloudflare\API\Auth\APIToken");
-        #$key     = new \Cloudflare\API\Auth\APIToken ( $apitoken);
-        #throw new \Exception(json_encode($x));
-
-        #$key     = new CloudFlare\API\APIToken ( $apitoken);
+        $boxlist[$ipAddress] = $net2[0];
 
 
-        #$res = array();
 
-        /*
-        try {
-            //$res = $this->cflocaldns->addPrivateIp($ipadress);
-        } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(array("error" => $e->getMessage())));
-            return $response->withStatus(500);
-        }*/
+
+        $res = array(   "eth0"=> $net1,
+                        "eth1"=> $net2,
+                        "extip"=>$ipAddress,
+                        "h"=>$request->getHeader("User-Agent") );
 
 
 
