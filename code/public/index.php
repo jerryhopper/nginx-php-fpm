@@ -80,6 +80,8 @@ $headersToInspect = [
 ];
 $checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
 $trustedProxies = $app->getContainer()->get(Preferences::class)->getTrustedProxies(); // Note: Never trust the IP address for security processes!
+error_log(json_encode($trustedProxies));
+
 $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies,'ip_address', $headersToInspect ));
 
 // Add the routing middleware.
