@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 return array(
     ExceptionDemoController::class => function (ContainerInterface $container): ExceptionDemoController {
         return new ExceptionDemoController();
@@ -28,7 +30,8 @@ return array(
             $container->get(Twig::class),
             $container->get(Preferences::class),
             $container->get(Session::class),
-            $container->get(FusionAuth::class)
+            $container->get(FusionAuth::class),
+            $container->get(Capsule::class)
         );
     },
 

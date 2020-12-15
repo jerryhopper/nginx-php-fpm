@@ -3,7 +3,11 @@
 declare(strict_types=1);
 
 use App\ContainerFactory;
+use App\Controllers\Api\DeviceSetupController;
 use App\Controllers\Api\LocalDnsController;
+use App\Controllers\Api\LocalSslController;
+use App\Controllers\Api\StatusController;
+use App\Controllers\Api\UnregisteredDeviceController;
 use App\Controllers\ExceptionDemoController;
 use App\Controllers\HelloController;
 use App\Controllers\HomeController;
@@ -66,6 +70,19 @@ $app->getRouteCollector()->setCacheFile(
 // Start the session
 $app->add(SessionMiddleware::class); // <-- here
 
+//
+$headersToInspect = [
+    'X-Real-IP',
+    'Forwarded',
+    'X-Forwarded-For',
+    'X-Forwarded',
+    'X-Cluster-Client-Ip',
+    'Client-Ip',
+];
+$checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
+$trustedProxies = ['10.0.0.1', '10.0.0.2']; // Note: Never trust the IP address for security processes!
+$app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies,'ip_address', $headersToInspect ));
+
 // Add the routing middleware.
 $app->addRoutingMiddleware();
 
@@ -106,9 +123,21 @@ $app->group('/', function (RouteCollectorProxy $group) {
 
 $app->group('/api/', function (RouteCollectorProxy $group) {
 
+    $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-devicesetup');
+
+    $group->get('devicesetup', DeviceSetupController::class)->setName('api-devicesetup');
+
+    $group->get('status', StatusController::class)->setName('api-status');
+
+    # Creation of dns-name for local ip
     $group->get('localdns', LocalDnsController::class)->setName('api-localdns');
 
+    # Starts download of certificate.
+    $group->get('localssl', LocalSslController::class)->setName('api-localssl');
 })->add(HttpsMiddleware::class);
+
+
+
 
 
 
