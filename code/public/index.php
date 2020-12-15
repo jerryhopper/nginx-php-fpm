@@ -79,7 +79,7 @@ $headersToInspect = [
     'HTTP_X_FORWARDED_FOR',
     'Forwarded',
 ];
-$checkProxyHeaders = false; // Note: Never trust the IP address for security processes!
+$checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
 $trustedProxies = $app->getContainer()->get(Preferences::class)->getTrustedProxies(); // Note: Never trust the IP address for security processes!
 error_log(json_encode($trustedProxies));
 
