@@ -15,6 +15,7 @@ use Slim\Views\Twig;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
+
 class UnregisteredDeviceController extends AbstractTwigController
 {
     /**
@@ -58,12 +59,12 @@ class UnregisteredDeviceController extends AbstractTwigController
     }
 
     private function setIpInDb($intIP,$extIP){
-        return Capsule::table('unregdevice')->insert(['ext-ip' => $extIP,'int-ip'=>$intIP ]);
+        return Capsule::table('unregdevice')->insert([ 'id'=>$extIP.'-'.$intIP , 'int-ip'=>$intIP , 'ext-ip' => $extIP ]);
     }
 
     private function createTable (){
         Capsule::schema()->create('unregdevice', function ($table) {
-            $table->increments('id')->unique();
+            $table->string('id')->unique();
             $table->string('ext-ip');
             $table->string('int-ip');
             $table->timestamps();
@@ -110,6 +111,19 @@ class UnregisteredDeviceController extends AbstractTwigController
                         "h"=>$request->getHeader("User-Agent") );
 
 
+
+        try{
+            //$this->setIpInDb($net2[0],$ipAddress);
+
+        }catch(\Exception $e){
+
+            if($e->getCode()=="42S02"){
+                //$this->createTable();
+                //$this->setIpInDb($net2[0],$ipAddress);
+            }
+
+
+        }
 
         $response->getBody()->write(json_encode($res));
 
