@@ -59,7 +59,7 @@ class Preferences
         $this->db_pass = $_SERVER["DB_PASS"] ? $_SERVER["DB_PASS"] : null;
         $this->db_dbname = $_SERVER["DB_DBNAME"] ? $_SERVER["DB_DBNAME"] : null;
 
-        $this->trusted_proxies = array('172.24.0.1');
+        $this->trusted_proxies = explode( ",", $_SERVER["TRUSTED_PROXIES"] );
     }
 
 
