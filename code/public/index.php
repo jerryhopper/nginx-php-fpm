@@ -20,6 +20,7 @@ use App\Controllers\OauthCallbackController;
 
 #use App\Action\LogoutAction;
 
+use App\Preferences;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
@@ -70,6 +71,7 @@ $app->getRouteCollector()->setCacheFile(
 // Start the session
 $app->add(SessionMiddleware::class); // <-- here
 
+
 //
 $headersToInspect = [
     'X-Real-IP',
@@ -77,7 +79,7 @@ $headersToInspect = [
     'Forwarded',
 ];
 $checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
-$trustedProxies = ['172.24.0.1']; // Note: Never trust the IP address for security processes!
+$trustedProxies = $app->getContainer()->get(Preferences::class)->getTrustedProxies(); // Note: Never trust the IP address for security processes!
 $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies,'ip_address', $headersToInspect ));
 
 // Add the routing middleware.
