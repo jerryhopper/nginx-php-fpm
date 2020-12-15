@@ -58,8 +58,11 @@ class Preferences
         $this->db_user = $_SERVER["DB_USER"] ? $_SERVER["DB_USER"] : null;
         $this->db_pass = $_SERVER["DB_PASS"] ? $_SERVER["DB_PASS"] : null;
         $this->db_dbname = $_SERVER["DB_DBNAME"] ? $_SERVER["DB_DBNAME"] : null;
-        #$_SERVER['REMOTE_ADDR']
-        $this->trusted_proxies = explode( ",", $_SERVER['REMOTE_ADDR'].",".$_SERVER["TRUSTED_PROXIES"] );
+
+        # Add $_SERVER['REMOTE_ADDR'] for use with docker, else it will resolve the docker-ip
+        $this->trusted_proxies = array($_SERVER['REMOTE_ADDR']);
+        #$this->trusted_proxies = explode( ",", $_SERVER["TRUSTED_PROXIES"] );
+
     }
 
 
