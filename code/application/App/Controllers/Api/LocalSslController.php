@@ -88,13 +88,13 @@ class LocalSslController extends AbstractTwigController
         # /home/nginx/.acme.sh/ssl.dockbox.nl/ca.cer
 
 
-        $filez = array(
-            "key"=>"ssl.dockbox.nl.key",
-            "cer"=>"ssl.dockbox.nl.cer",
-            "fullchain"=>"fullchain.cer"
-        );
+        #$filez = array(
+        #    "key"=>"ssl.dockbox.nl.key",
+        #    "cer"=>"ssl.dockbox.nl.cer",
+        #    "fullchain"=>"fullchain.cer"
+        #);
 
-        $dlfilename=$filez[$item];
+        #$dlfilename=$filez[$item];
 
 //      /home/nginx/.acme.sh/ssl.dockbox.nl/ssl.dockbox.nl.key
 
@@ -105,10 +105,11 @@ class LocalSslController extends AbstractTwigController
 
         //$the_file=$_SERVER['DOCUMENT_ROOT']."info.php";
 
-        $the_file = '/home/nginx/.acme.sh/ssl.dockbox.nl/'.$dlfilename;
+        #$the_file = '/home/nginx/.acme.sh/ssl.dockbox.nl/'.$dlfilename;
 #                    /home/nginx/.acme.sh/ssl.dockbox.nl/
 
-        $the_file = "/home/nginx/.acme.sh/ssl.dockbox.nl/ssl.dockbox.nl.key";
+        $the_file = "/home/nginx/.acme.sh/ssl.dockbox.nl/".$item;
+
         if( ! file_exists($the_file) ){
             return $response->withStatus(404);
         }
@@ -122,19 +123,13 @@ class LocalSslController extends AbstractTwigController
 
 
 
-        #var_dump(file_get_contents($the_file ));
-        #$item = stream_get_contents($the_file);
-
         $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
         $responseBody  = $psr17Factory->createStream($contents);
 
 
-
-
         $response = $response
-            /*->withHeader('Content-Type', 'application/octet-stream')
-            ->withHeader('Content-Disposition', 'attachment; filename='.$dlfilename)
-            */
+            ->withHeader('Content-Type', 'text/plain')
+/*            ->withHeader('Content-Disposition', 'attachment; filename='.$item)*/
             ->withAddedHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->withHeader('Cache-Control', 'post-check=0, pre-check=0')
             ->withHeader('Pragma', 'no-cache')
