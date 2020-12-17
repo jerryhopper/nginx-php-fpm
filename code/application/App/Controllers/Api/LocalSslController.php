@@ -106,7 +106,7 @@ class LocalSslController extends AbstractTwigController
         //$the_file=$_SERVER['DOCUMENT_ROOT']."info.php";
 
         $the_file = '/home/nginx/.acme.sh/ssl.dockbox.nl/'.$dlfilename;
-
+#                    /home/nginx/.acme.sh/ssl.dockbox.nl/
 
 
         if( ! file_exists($the_file) ){
