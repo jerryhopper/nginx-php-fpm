@@ -7,6 +7,7 @@ namespace App\Controllers\Api;
 use App\Controllers\AbstractTwigController;
 use App\Database\Models\LocalDns;
 use App\Database\Models\UnregisteredDevice;
+use App\Database\Schemas\LocalDnsSchema;
 use App\Preferences;
 use App\ProjectCode\CfLocalDns;
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
@@ -15,6 +16,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Database\Capsule\Manager as Capsule;
+
+
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 
 class LocalDnsController extends AbstractTwigController
 {
@@ -74,15 +79,19 @@ class LocalDnsController extends AbstractTwigController
 
 
 
+
         try{
             $users = $this->getIpFromDb($ipadress);
         }catch(\Exception $e){
             $users = array();
 
+
+
+            // Table not found?  create it.
             if($e->getCode()=="42S02"){
                 // create table!?
+                LocalDnsSchema::create();
             }
-
         }
 
         if( count($users) > 0 ){
@@ -101,7 +110,7 @@ class LocalDnsController extends AbstractTwigController
         $res = array();
 
         try{
-            $res = $this->cflocaldns->addPrivateIp($ipadress);
+            #$res = $this->cflocaldns->addPrivateIp($ipadress);
         }catch(\Exception $e){
             $lines = explode("\n",$e->getMessage());
             $json = json_decode($lines[1]);

@@ -59,6 +59,7 @@ class UnregisteredDeviceController extends AbstractTwigController
 
     }
 
+
     public function getIpsFromDb($ipadress){
         return UnregisteredDevice::where('ext-ip', $ipadress)->get();
         #return Capsule::table('unregdevice')->where('ext-ip', '=', $ipadress)->get();
@@ -93,20 +94,25 @@ class UnregisteredDeviceController extends AbstractTwigController
         }
 
         # GET
+        try{
+            $res = $this->getIpsFromDb( $request->getAttribute('ip_address'));
+
+        }catch(\Exception $e){
+            if($e->getCode()=="42S02"){
+                $this->createTable();
+                $res = $this->getIpsFromDb( $request->getAttribute('ip_address'));
+            }else{
+                throw new \Exception($e->getMessage());
+            }
+
+
+
+        }
         $res = $this->getIpsFromDb( $request->getAttribute('ip_address'));
         $response->getBody()->write(json_encode($res));
 
         return $response->withHeader('Content-Type', 'application/json');
 
-        /*
-                return $response->withHeader("Content-type","application/json; charset=utf-8")->withBody("[]");
-
-                return $this->render($response, 'login.twig', [
-                    'pageTitle' => 'Login',
-                    'authorizationUrl' => $this->oauthclientProvider->getAuthorizationUrl(),
-                    'data' => $this->oauthclientProvider->getAuthorizationUrl(),
-                    'rootPath' => $this->preferences->getRootPath(),
-                ]);*/
     }
 
     private function POST(Request $request, Response $response, array $args = []){
@@ -140,15 +146,15 @@ class UnregisteredDeviceController extends AbstractTwigController
             "h"=>$request->getHeader("User-Agent") );
 
 
-        $this->setIpInDb($net2[0],$ipAddress);
-        try{
 
+        try{
+            $this->setIpInDb($net2[0],$ipAddress);
 
         }catch(\Exception $e){
 
             if($e->getCode()=="42S02"){
-                //$this->createTable();
-                //$this->setIpInDb($net2[0],$ipAddress);
+                $this->createTable();
+                $this->setIpInDb($net2[0],$ipAddress);
             }
 
 
