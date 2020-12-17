@@ -5,6 +5,8 @@ namespace App\Controllers\Api;
 
 
 use App\Controllers\AbstractTwigController;
+use App\Database\Models\LocalDns;
+use App\Database\Models\UnregisteredDevice;
 use App\Preferences;
 use App\ProjectCode\CfLocalDns;
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
@@ -67,29 +69,18 @@ class LocalDnsController extends AbstractTwigController
         }
 
 
+        ## Get the ip adress from query-paramater
         $ipadress = $request->getQueryParams()['ipadress'];
 
 
 
-        #$data = (array)$request->getParsedBody();
-        #$ipadress = (string)($data['ipadress'] ?? '');
-
-        #$x= class_exists("Cloudflare\API\Auth\APIToken");
-        #$key     = new \Cloudflare\API\Auth\APIToken ( $apitoken);
-        #throw new \Exception(json_encode($x));
-
-        #$key     = new CloudFlare\API\APIToken ( $apitoken);
         try{
             $users = $this->getIpFromDb($ipadress);
         }catch(\Exception $e){
             $users = array();
 
             if($e->getCode()=="42S02"){
-                Capsule::schema()->create('dns', function ($table) {
-                    $table->increments('id');
-                    $table->string('ip')->unique();
-                    $table->timestamps();
-                });
+                // create table!?
             }
 
         }
@@ -123,7 +114,7 @@ class LocalDnsController extends AbstractTwigController
         }
 
         try{
-            Capsule::table('dns')->insert(['ip' => $ipadress]);
+            $this->addIpInDb($ipadress);
         }catch(\Exception $e){
             if ( ! strpos($e->getMessage(),"dns_ip_unique")){
                 $response->getBody()->write(json_encode( array("error"=>$e->getMessage()) ));
@@ -138,10 +129,12 @@ class LocalDnsController extends AbstractTwigController
     }
 
 
-
+    private function addIpInDb($ipadress){
+        return LocalDns::updateOrCreate([ 'ip' => $ipadress ]);
+    }
 
     private function getIpFromDb($ipadress){
-        return Capsule::table('dns')->where('ip', '=', $ipadress)->get();
+        return LocalDns::where('ip', $ipadress)->get();
     }
 
 

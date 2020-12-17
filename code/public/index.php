@@ -125,17 +125,26 @@ $app->group('/', function (RouteCollectorProxy $group) {
 
 $app->group('/api/', function (RouteCollectorProxy $group) {
 
-    $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-devicesetup');
-
-    $group->get('devicesetup', DeviceSetupController::class)->setName('api-devicesetup');
-
-    $group->get('status', StatusController::class)->setName('api-status');
-
+    # Post local osbox-ip if unregistred.
+    $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregdevicesetup');
+    # Get local osbox-ip based on external ip
+    $group->get('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregdevicesetup');
     # Creation of dns-name for local ip
     $group->get('localdns', LocalDnsController::class)->setName('api-localdns');
 
     # Starts download of certificate.
     $group->get('localssl', LocalSslController::class)->setName('api-localssl');
+
+
+
+
+    $group->get('devicesetup', DeviceSetupController::class)->setName('api-devicesetup');
+
+    $group->get('status', StatusController::class)->setName('api-status');
+
+
+
+
 })->add(HttpsMiddleware::class);
 
 
