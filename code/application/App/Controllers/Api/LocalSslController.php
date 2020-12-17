@@ -132,8 +132,9 @@ class LocalSslController extends AbstractTwigController
 
 
         $response = $response
-            ->withHeader('Content-Type', 'application/octet-stream')
+            /*->withHeader('Content-Type', 'application/octet-stream')
             ->withHeader('Content-Disposition', 'attachment; filename='.$dlfilename)
+            */
             ->withAddedHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->withHeader('Cache-Control', 'post-check=0, pre-check=0')
             ->withHeader('Pragma', 'no-cache')
