@@ -106,7 +106,6 @@ class UnregisteredDeviceController extends AbstractTwigController
             }
 
 
-
         }
         $res = $this->getIpsFromDb( $request->getAttribute('ip_address'));
         $response->getBody()->write(json_encode($res));

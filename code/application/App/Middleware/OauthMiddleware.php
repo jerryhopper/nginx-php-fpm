@@ -50,7 +50,29 @@ final class OauthMiddleware implements MiddlewareInterface
         #if(){
 
         #}
-        $this->session->get("expires");
+        //error_log(json_encode($this->session->all()));
+
+        $u = $this->session->get("user");
+
+        //error_log(json_encode($u) );
+
+        if($u && $u['expires']<time()){
+            // expired!
+            // User is not logged in. Redirect to login page.
+            error_log("Token expired!");
+
+            $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+            $this->session->invalidate();
+            $responseBody = $psr17Factory->createStream('unauthorized');
+
+            $response = $psr17Factory->createResponse(401)->withBody($responseBody)->withHeader('Location', "/logout");
+
+            return $response;
+
+        }
+
+        //error_log(json_encode($u['expires']) );
+        //error_log(json_encode(time()) );
 
         return $handler->handle($request);
 /*
