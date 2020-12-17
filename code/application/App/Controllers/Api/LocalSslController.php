@@ -103,7 +103,7 @@ class LocalSslController extends AbstractTwigController
 
         //        (new StreamFactory())->createStream($data)
 
-        //$_SERVER['DOCUMENT_ROOT']."info.php"
+        //$the_file=$_SERVER['DOCUMENT_ROOT']."info.php";
 
         $the_file = '/home/nginx/.acme.sh/ssl.dockbox.nl/'.$dlfilename;
 
@@ -114,7 +114,7 @@ class LocalSslController extends AbstractTwigController
         }
 
 
-        $the_file = $_SERVER['DOCUMENT_ROOT']."info.php";
+        //$the_file = $_SERVER['DOCUMENT_ROOT']."info.php";
 
         $handle = fopen($the_file, "r");
         $contents = fread($handle, filesize($the_file));
