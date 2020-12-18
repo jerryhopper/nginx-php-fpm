@@ -9,7 +9,7 @@ use App\Database\Models\LocalDns;
 use App\Database\Models\UnregisteredDevice;
 use App\Database\Schemas\LocalDnsSchema;
 use App\Preferences;
-use App\ProjectCode\CfLocalDns;
+use App\Service\CfLocalDns;
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

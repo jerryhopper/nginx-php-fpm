@@ -10,6 +10,7 @@ use App\Database\Models\UnregisteredDevice;
 use App\Database\Schemas\UnregisteredDeviceSchema;
 use App\Preferences;
 use App\ProjectCode\CfLocalDns;
+use App\Service\UnregisteredDeviceService;
 use Illuminate\Support\Carbon;
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -35,9 +36,9 @@ class UnregisteredDeviceController extends AbstractTwigController
     private $oauthclientProvider;
 
     /**
-     * @var cflocaldns
+     * @var UnregisteredDeviceService
      */
-    private $cflocaldns;
+    private $UnregisteredDeviceService;
 
     /**
      * LoginController constructor.
@@ -54,30 +55,13 @@ class UnregisteredDeviceController extends AbstractTwigController
         $this->session = $session;
         #$this->cflocaldns = new CfLocalDns($this->preferences->getCloudflareToken(), $this->preferences->getCloudflareZoneId());
 
+        $this->UnregisteredDeviceService = new UnregisteredDeviceService();
 
 
 
     }
 
 
-    public function getIpsFromDb($ipadress){
-        return UnregisteredDevice::where('ext-ip', $ipadress)->get();
-        #return Capsule::table('unregdevice')->where('ext-ip', '=', $ipadress)->get();
-    }
-
-    public function setIpInDb($intIP,$extIP){
-        return UnregisteredDevice::updateOrCreate([    'id' => $extIP."-".$intIP,    'ext-ip' => $extIP,    'int-ip' => $intIP, ]);
-        #return Capsule::table('unregdevice')->insert([ 'id'=>$extIP.'-'.$intIP , 'int-ip'=>$intIP , 'ext-ip' => $extIP , ]);
-    }
-
-    public function deleteStaleRecords(){
-        UnregisteredDevice::where('updated_at', '<' , Carbon::now()->subDay())->delete();
-    }
-
-
-    public function createTable (){
-        return UnregisteredDeviceSchema::create();
-    }
 
     /**
      * @param Request $request
@@ -92,28 +76,30 @@ class UnregisteredDeviceController extends AbstractTwigController
         if( $request->getMethod()=="POST" ){
             return $this->POST($request,$response,$args);
         }
-
         # GET
+        return $this->get($request,$response,$args);
+
+    }
+
+    private function GET(Request $request, Response $response, array $args = []){
         try{
-            $res = $this->getIpsFromDb( $request->getAttribute('ip_address'));
+            $res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
 
         }catch(\Exception $e){
             if($e->getCode()=="42S02"){
-                $this->createTable();
-                $res = $this->getIpsFromDb( $request->getAttribute('ip_address'));
+                $this->UnregisteredDeviceService->createTable();
+                $res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
             }else{
                 throw new \Exception($e->getMessage());
             }
 
 
         }
-        $res = $this->getIpsFromDb( $request->getAttribute('ip_address'));
+        //$res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
         $response->getBody()->write(json_encode($res));
 
         return $response->withHeader('Content-Type', 'application/json');
-
     }
-
     private function POST(Request $request, Response $response, array $args = []){
 
         #$ipadress = $request->getQueryParams()['ipadress'];
@@ -126,6 +112,8 @@ class UnregisteredDeviceController extends AbstractTwigController
         $ipAddress = $request->getAttribute('ip_address');
 
         $data = (array)$request->getParsedBody();
+
+
         $net1 = (string)($data['eth0'] ?? '');
         $net2 = (string)($data['eth1'] ?? '');
 
@@ -147,19 +135,19 @@ class UnregisteredDeviceController extends AbstractTwigController
 
 
         try{
-            $this->setIpInDb($net2[0],$ipAddress);
+            $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress);
 
         }catch(\Exception $e){
 
             if($e->getCode()=="42S02"){
-                $this->createTable();
-                $this->setIpInDb($net2[0],$ipAddress);
+                $this->UnregisteredDeviceService->createTable();
+                $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress);
             }
 
 
         }
 
-        $this->deleteStaleRecords();
+        $this->UnregisteredDeviceService->deleteStaleRecords();
 
         $response->getBody()->write(json_encode($res));
 

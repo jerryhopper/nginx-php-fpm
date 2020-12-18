@@ -6,12 +6,16 @@ namespace App\Controllers\Api;
 
 use App\Controllers\AbstractTwigController;
 use App\Preferences;
-use App\ProjectCode\CfLocalDns;
+
+use App\Service\CfLocalDns;
+use App\Service\UnregisteredDeviceService;
+
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class StatusController extends AbstractTwigController
 {
@@ -29,9 +33,9 @@ class StatusController extends AbstractTwigController
     private $oauthclientProvider;
 
     /**
-     * @var cflocaldns
+     * @var UnregisteredDeviceService
      */
-    private $cflocaldns;
+    private $UnregisteredDeviceService;
 
     /**
      * LoginController constructor.
@@ -46,8 +50,9 @@ class StatusController extends AbstractTwigController
         $this->oauthclientProvider = $oauthclientProvider;
         $this->preferences = $preferences;
         $this->session = $session;
-        $this->cflocaldns = new CfLocalDns($this->preferences->getCloudflareToken(), $this->preferences->getCloudflareZoneId());
+        //$this->cflocaldns = new CfLocalDns($this->preferences->getCloudflareToken(), $this->preferences->getCloudflareZoneId());
 
+        $this->UnregisteredDeviceService = new UnregisteredDeviceService();
 
         //
 
@@ -64,9 +69,7 @@ class StatusController extends AbstractTwigController
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
 
-        $ipadress = $request->getQueryParams()['ipadress'];
-
-
+        #$ipadress = $request->getQueryParams()['ipadress'];
         #$data = (array)$request->getParsedBody();
         #$ipadress = (string)($data['ipadress'] ?? '');
 
@@ -87,9 +90,16 @@ class StatusController extends AbstractTwigController
             return $response->withStatus(500);
         }*/
 
+        // json_encode($this->session->get('user')['token'] )
 
 
-        $response->getBody()->write(json_encode($this->session->get('user') ));
+
+
+        $output = array(    "registered" => array(),
+                            "unregistered"=>$this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address')),
+                            "token" => $this->session->get('user')['token'] );
+
+        $response->getBody()->write(json_encode( $output ));
 
         return $response->withHeader('Content-Type', 'application/json');
         /*

@@ -35,11 +35,13 @@ return [
     ResponseFactoryInterface::class => function (ContainerInterface $container) {
         return $container->get(App::class)->getResponseFactory();
     },
+
     App::class => function (ContainerInterface $container) {
         AppFactory::setContainer($container);
 
         return AppFactory::create();
     },
+
     FusionAuth::class => function (ContainerInterface $container): FusionAuth {
         // Get the preferences from the container.
         $preferences = $container->get(Preferences::class);

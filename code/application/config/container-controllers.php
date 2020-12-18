@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Controllers\Api\LocalDnsController;
+use App\Controllers\Api\StatusController;
 use App\Controllers\Api\UnregisteredDeviceController;
 use App\Controllers\ExceptionDemoController;
 use App\Controllers\HelloController;
@@ -26,8 +27,18 @@ return array(
     ExceptionDemoController::class => function (ContainerInterface $container): ExceptionDemoController {
         return new ExceptionDemoController();
     },
+
     LocalDnsController::class => function (ContainerInterface $container): LocalDnsController {
         return new LocalDnsController(
+            $container->get(Twig::class),
+            $container->get(Preferences::class),
+            $container->get(Session::class),
+            $container->get(FusionAuth::class),
+            $container->get(Capsule::class)
+        );
+    },
+    StatusController::class => function (ContainerInterface $container): StatusController {
+        return new StatusController(
             $container->get(Twig::class),
             $container->get(Preferences::class),
             $container->get(Session::class),
