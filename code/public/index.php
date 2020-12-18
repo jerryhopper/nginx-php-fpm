@@ -81,14 +81,14 @@ $headersToInspect = [
 ];
 $checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
 $trustedProxies = $app->getContainer()->get(Preferences::class)->getTrustedProxies(); // Note: Never trust the IP address for security processes!
-error_log(json_encode($trustedProxies));
+
 
 $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies,'ip_address', $headersToInspect ));
 
 // Add the routing middleware.
 $app->addRoutingMiddleware();
 
-$app->add(OauthMiddleware::class); // <-- here
+//$app->add(OauthMiddleware::class); // <-- here
 
 // Add the twig middleware.
 $app->addMiddleware(
@@ -102,33 +102,48 @@ $logErrors = true;
 $logErrorDetails = false;
 $app->addErrorMiddleware($displayErrorDetails, $logErrors, $logErrorDetails);
 
+
+
+
+
+
+
+
+
+
 // Define the app routes.
 $app->group('/', function (RouteCollectorProxy $group) {
 
-    //$group->get('login', \App\Action\LoginAction::class)->setName('login');
+    # Login
     $group->get( 'login',  LoginController::class)->setName('login');
     $group->post('login',  \App\Action\LoginSubmitAction::class)->setName('login-submit');
+
+    # Logout
     $group->get( 'logout', \App\Action\LogoutAction::class)->setName('logout');
 
 
-
-
+    # Homwpage - landingpage.
     $group->get('', DashboardController::class)->setName('home')->add(UserAuthMiddleware::class);
 
-    #$group->get('', HomeController::class)->setName('home');
 
+
+
+    #$group->get('', HomeController::class)->setName('home');
     #$group->get('users-get', HomeController::class)->setName('users-get');
     #$group->get('hello/{name}', HelloController::class)->setName('hello');
     #$group->get('exception-demo', ExceptionDemoController::class)->setName('exception-demo');
-})->add(HttpsMiddleware::class);
+
+})->add(HttpsMiddleware::class)->add(OauthMiddleware::class);
 
 
 $app->group('/api/', function (RouteCollectorProxy $group) {
 
     # Post local osbox-ip if unregistred.
     $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregdevicesetup');
-    # Get local osbox-ip based on external ip
+    # Get list of local osbox-ip based on external ip
     $group->get('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregdevicesetup');
+
+
     # Creation of dns-name for local ip
     $group->get('localdns', LocalDnsController::class)->setName('api-localdns');
 
@@ -140,15 +155,18 @@ $app->group('/api/', function (RouteCollectorProxy $group) {
 
     $group->get('devicesetup', DeviceSetupController::class)->setName('api-devicesetup');
 
-    $group->get('status', StatusController::class)->setName('api-status');
 
+
+
+
+    $group->get('status', StatusController::class)->setName('api-status')->add(OauthMiddleware::class);
 
 
 
 })->add(HttpsMiddleware::class);
 
 
-
+//$app->get('/status', StatusController::class)->setName('api-status')->add(OauthMiddleware::class);
 
 
 
@@ -159,19 +177,10 @@ $app->group('/dashboard/', function (RouteCollectorProxy $group) {
     $group->get('', DashboardController::class)->setName('dashboard');
 
 
-})->add(UserAuthMiddleware::class);
-// ->add(HttpsMiddleware::class)
+})->add(OauthMiddleware::class)->add(HttpsMiddleware::class);
+//
 
 
-
-
-
-
-$app->group('/users/', function (RouteCollectorProxy $group) {
-    // ...
-    $group->get('get', LoggedinController::class)->setName('users-get');
-
-})->add(UserAuthMiddleware::class);
 
 
 
@@ -179,14 +188,8 @@ $app->group('/users/', function (RouteCollectorProxy $group) {
 
 
 $app->group('/oauth2/', function (RouteCollectorProxy $group) {
-
-    //$group->get('login', \App\Action\OauthLoginAction::class)->setName('oauth-login');
-
     $group->get('callback', \App\Action\OauthCallbackAction::class)->setName('oauth2-callback');
-
-    //$group->get('', HomeController::class)->setName('home');
-    //$group->get('callback', OauthCallbackController::class)->setName('oauth-callback');
-});
+})->add(HttpsMiddleware::class);
 
 
 
