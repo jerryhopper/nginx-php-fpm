@@ -91,13 +91,24 @@ class StatusController extends AbstractTwigController
         }*/
 
         // json_encode($this->session->get('user')['token'] )
+        $devices = array();
+        try{
+            $devices = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
+        }catch(\Exception $e ){
+            if($e->getCode()=="42S02"){
+                $this->UnregisteredDeviceService->createTable();
+
+            }else{
+                throw new \Exception($e->getMessage());
+            }
+        }
 
 
 
 
         $output = array(    "registered" => array(),
-                            "unregistered"=>$this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address')),
-                            "token" => $this->session->get('user')['token'] );
+                            "unregistered"=> $devices ,
+                            "token"=>$this->session->get('user')['token'] );
 
         $response->getBody()->write(json_encode( $output ));
 

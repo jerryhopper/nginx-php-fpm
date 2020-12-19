@@ -77,15 +77,18 @@ class UnregisteredDeviceController extends AbstractTwigController
             return $this->POST($request,$response,$args);
         }
         # GET
+
         return $this->get($request,$response,$args);
 
     }
 
     private function GET(Request $request, Response $response, array $args = []){
+
         try{
             $res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
 
         }catch(\Exception $e){
+
             if($e->getCode()=="42S02"){
                 $this->UnregisteredDeviceService->createTable();
                 $res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
