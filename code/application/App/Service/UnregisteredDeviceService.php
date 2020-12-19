@@ -15,8 +15,8 @@ class UnregisteredDeviceService
         return UnregisteredDevice::where('ext-ip', $ipadress)->get();
     }
 
-    public function setIpInDb($intIP,$extIP){
-        return UnregisteredDevice::updateOrCreate([    'id' => $extIP."-".$intIP,    'ext-ip' => $extIP,    'int-ip' => $intIP, ]);
+    public function setIpInDb($intIP,$extIP,$deviceid){
+        return UnregisteredDevice::updateOrCreate([    'id' => $extIP."-".$intIP,    'ext-ip' => $extIP,    'int-ip' => $intIP, 'deviceid'=>$deviceid ]);
     }
 
     public function deleteStaleRecords(){

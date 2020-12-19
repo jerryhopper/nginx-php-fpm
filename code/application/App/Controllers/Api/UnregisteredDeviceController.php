@@ -104,6 +104,7 @@ class UnregisteredDeviceController extends AbstractTwigController
 
         #$ipadress = $request->getQueryParams()['ipadress'];
 
+        # deviceid
 
         if ( $request->getHeader("User-Agent")[0]=="OSBox" ){
 
@@ -116,7 +117,7 @@ class UnregisteredDeviceController extends AbstractTwigController
 
         $net1 = (string)($data['eth0'] ?? '');
         $net2 = (string)($data['eth1'] ?? '');
-
+        $deviceid = (string)($data['deviceid'] ?? '');
 
         $net1 = explode(",",$net1);
         $net2 = explode(",",$net2);
@@ -127,21 +128,23 @@ class UnregisteredDeviceController extends AbstractTwigController
 
 
 
-        $res = array(   "eth0"=> $net1,
+        $res = array(
+            "eth0"=> $net1,
             "eth1"=> $net2,
             "extip"=>$ipAddress,
-            "h"=>$request->getHeader("User-Agent") );
+            "h"=>$request->getHeader("User-Agent"),
+            "deviceid"=>$deviceid );
 
 
 
         try{
-            $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress);
+            $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress,$deviceid);
 
         }catch(\Exception $e){
 
             if($e->getCode()=="42S02"){
                 $this->UnregisteredDeviceService->createTable();
-                $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress);
+                $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress,$deviceid);
             }
 
 

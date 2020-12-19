@@ -14,6 +14,7 @@ class UnregisteredDeviceSchema
             $table->string('id')->unique();
             $table->string('ext-ip');
             $table->string('int-ip');
+            $table->string('deviceid');
             $table->timestamps();
         });
 
