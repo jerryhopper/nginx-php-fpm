@@ -14,7 +14,7 @@ class UnregisteredDevice extends Model
 
     protected $fillable = [
 
-        'id', 'ext-ip', 'int-ip'
+        'id', 'ext-ip', 'int-ip','deviceid'
 
     ];
 

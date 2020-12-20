@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 
-class UnregisteredDeviceController extends AbstractTwigController
+class RegisteredDeviceController extends AbstractTwigController
 {
     /**
      * @var Session
@@ -72,37 +72,12 @@ class UnregisteredDeviceController extends AbstractTwigController
      */
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
-        # check if POST
-        if( $request->getMethod()=="POST" ){
-            return $this->POST($request,$response,$args);
-        }
-        # GET
-
-        return $this->get($request,$response,$args);
+        return $this->POST($request,$response,$args);
 
     }
 
-    private function GET(Request $request, Response $response, array $args = []){
-
-        try{
-            $res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
-
-        }catch(\Exception $e){
-
-            if($e->getCode()=="42S02"){
-                $this->UnregisteredDeviceService->createTable();
-                $res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
-            }else{
-                throw new \Exception($e->getMessage(),$e->getCode());
-            }
 
 
-        }
-        //$res = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
-        $response->getBody()->write(json_encode($res));
-
-        return $response->withHeader('Content-Type', 'application/json');
-    }
     private function POST(Request $request, Response $response, array $args = []){
 
         #$ipadress = $request->getQueryParams()['ipadress'];

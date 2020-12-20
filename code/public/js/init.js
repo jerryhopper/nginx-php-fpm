@@ -14,7 +14,7 @@ websocket_response=function(data,osboxwebsocket){
             if( data.code==200 ){
                 let row = $('.devices-row');
                 let col = $('<div>').addClass('col-md4').appendTo(row);
-                createCardsFor(col,data.data,data.host);
+                createCardsFor(col,data.data,data.host,window.showonly);
             }
             if( data.code==500 ){
 
@@ -160,9 +160,19 @@ function createCardsFor($container,device,host,show='unregistered') {
     }else if(show=='registered' && device['device-state'] == 'unregistered'){
         return
     }
+/*
+    device.hardware
+    device.deviceid
+    device.disk
+    device.loadaverage
+    device.ram
+    device.uptime
+    device.temperature
+    device.release = latest
 
+*/
 
-    let card = $('<div>').addClass('card').css({
+    let card = $('<div>').addClass('card').addClass( device.deviceid ).css({
         'width': '18rem',
         'margin': '2px',
     }).appendTo($container);
@@ -179,8 +189,12 @@ function createCardsFor($container,device,host,show='unregistered') {
 
     let bodyText = $('<p>').addClass("card-text").text(device['sys-info']).appendTo(cardBody);
     if( sessionStorage.getItem("token") != "null" ){
-        let bodyLink = $('<a href="#">>').addClass("card-link").text('Manage').appendTo(cardBody);
-        let bodyLink2 = $('<a href="#" onclick="configureDevice(device,host)">').addClass("card-link").text('Configure').appendTo(cardBody);
+        if(device['device-state'] == 'registered'){
+            let bodyLink = $('<a href="#">>').addClass("card-link").text('Manage').appendTo(cardBody);
+        }
+        if(device['device-state'] == 'unregistered') {
+            let bodyLink2 = $('<a href="#" onclick="configureDevice(device,host)">').addClass("card-link").text('Configure').appendTo(cardBody);
+        }
     }
 
 }
@@ -254,8 +268,9 @@ polldevice=function(host){
 }
 
 
-dashboardinit = function(){
+devicedashboardinit = function(){
   // check if loggedin
+    //unregistered deviceType
   // /api/status
     ///api/unregistereddevice
     //sessionStorage.clear();
@@ -268,9 +283,12 @@ dashboardinit = function(){
             //console.log(data.token);
             sessionStorage.setItem("token", data.token);
 
+
+
+
             //let row = $('<div>').addClass('row').prependTo(document.body);
             let row = $('.devices-row').addClass('row');
-            for( i in data.unregistered ){
+            for( i in data[ window.showonly ] ){
                 device = polldevice(data.unregistered[i]);
 
             }
@@ -285,7 +303,3 @@ dashboardinit = function(){
 
 
 
-$("document").ready(function(){
-    dashboardinit();
-
-});

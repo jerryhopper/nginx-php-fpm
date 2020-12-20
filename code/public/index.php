@@ -6,6 +6,7 @@ use App\ContainerFactory;
 use App\Controllers\Api\DeviceSetupController;
 use App\Controllers\Api\LocalDnsController;
 use App\Controllers\Api\LocalSslController;
+use App\Controllers\Api\RegisteredDeviceController;
 use App\Controllers\Api\StatusController;
 use App\Controllers\Api\UnregisteredDeviceController;
 use App\Controllers\ExceptionDemoController;
@@ -15,6 +16,7 @@ use App\Controllers\LoginController;
 use App\Controllers\DashboardController;
 use App\Controllers\MyBoxesController;
 use App\Controllers\MyAppsController;
+use App\Controllers\MyDeviceController;
 use App\Controllers\OauthCallbackController;
 
 
@@ -138,10 +140,14 @@ $app->group('/', function (RouteCollectorProxy $group) {
 
 $app->group('/api/', function (RouteCollectorProxy $group) {
 
+    # Post to update local osboxip, and updates 'running' status online
+    $group->post('registereddevice', RegisteredDeviceController::class)->setName('api-registereddevice');
+
     # Post local osbox-ip if unregistred.
-    $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregdevicesetup');
+    $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregistereddevice');
     # Get list of local osbox-ip based on external ip
-    $group->get('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregdevicesetup');
+    $group->get('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregistereddevice');
+
 
 
     # Creation of dns-name for local ip
@@ -172,7 +178,11 @@ $app->group('/api/', function (RouteCollectorProxy $group) {
 
 $app->group('/dashboard/', function (RouteCollectorProxy $group) {
     // ...
+    $group->get('device/{id}', MyDeviceController::class)->setName('mydevice');
+
+
     $group->get('myapps', MyAppsController::class)->setName('myapps');
+
     $group->get('myboxes', MyBoxesController::class)->setName('myboxes');
     $group->get('', DashboardController::class)->setName('dashboard');
 

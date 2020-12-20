@@ -8,30 +8,30 @@ use App\Database\Models\UnregisteredDevice;
 use App\Database\Schemas\UnregisteredDeviceSchema;
 use Illuminate\Support\Carbon;
 
-class UnregisteredDeviceService
+class RegisteredDeviceService
 {
 
     public function getIpsFromDb($ipadress){
-        return UnregisteredDevice::where('ext-ip', $ipadress)->get();
+        return RegisteredDevice::where('ext-ip', $ipadress)->get();
     }
 
     public function setIpInDb($intIP,$extIP,$deviceid){
-        return UnregisteredDevice::updateOrCreate([    'id' => $extIP."-".$intIP,    'ext-ip' => $extIP,    'int-ip' => $intIP, 'deviceid' => $deviceid ]);
+        return RegisteredDevice::updateOrCreate([    'id' => $extIP."-".$intIP,    'ext-ip' => $extIP,    'int-ip' => $intIP, 'deviceid' => $deviceid ]);
     }
 
     public function deleteStaleRecords(){
-        UnregisteredDevice::where('updated_at', '<' , Carbon::now()->subDay())->delete();
+        RegisteredDevice::where('updated_at', '<' , Carbon::now()->subDay())->delete();
     }
 
     public function createTable (){
-        return UnregisteredDeviceSchema::create();
+        return RegisteredDevice::create();
     }
 
 
     public function getHosts($ipadress){
 
         $array = array();
-        foreach( UnregisteredDevice::where('ext-ip', $ipadress)->get() as $item){
+        foreach( RegisteredDevice::where('ext-ip', $ipadress)->get() as $item){
             $array[] = str_replace(".","-",$item['int-ip']).".ssl.dockbox.nl";
         }
         return $array;
