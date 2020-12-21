@@ -88,7 +88,7 @@ class RegisteredDeviceController extends AbstractTwigController
         $user = $this->session->get('user');
         $owner = $user->userinfo->tokeninfo->userId;
 
-        $owner="0629a012-69f3-45d0-88b5-a7c4527c828e";
+        #$owner="0629a012-69f3-45d0-88b5-a7c4527c828e";
 
         try{
             $res = $this->RegisteredDeviceService->getHosts( $owner  );
