@@ -26,7 +26,7 @@ class RegisteredDevice extends Model
 
     protected $hidden = [
 
-        'id',
+
 
     ];
 

@@ -142,6 +142,8 @@ $app->group('/api/', function (RouteCollectorProxy $group) {
 
     # Post to update local osboxip, and updates 'running' status online
     $group->post('registereddevice', RegisteredDeviceController::class)->setName('api-registereddevice');
+    # Get list of local osbox-ip based on owner id
+    $group->get('registereddevice', RegisteredDeviceController::class)->setName('api-registereddevice');
 
     # Post local osbox-ip if unregistred.
     $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregistereddevice');

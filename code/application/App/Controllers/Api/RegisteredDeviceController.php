@@ -10,6 +10,7 @@ use App\Database\Models\UnregisteredDevice;
 use App\Database\Schemas\UnregisteredDeviceSchema;
 use App\Preferences;
 use App\ProjectCode\CfLocalDns;
+use App\Service\RegisteredDeviceService;
 use App\Service\UnregisteredDeviceService;
 use Illuminate\Support\Carbon;
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
@@ -55,7 +56,7 @@ class RegisteredDeviceController extends AbstractTwigController
         $this->session = $session;
         #$this->cflocaldns = new CfLocalDns($this->preferences->getCloudflareToken(), $this->preferences->getCloudflareZoneId());
 
-        $this->UnregisteredDeviceService = new UnregisteredDeviceService();
+        $this->RegisteredDeviceService = new RegisteredDeviceService();
 
 
 
@@ -72,15 +73,51 @@ class RegisteredDeviceController extends AbstractTwigController
      */
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
-        return $this->POST($request,$response,$args);
+        # check if POST
+        if( $request->getMethod()=="POST" ){
+            return $this->POST($request,$response,$args);
+        }
+        # GET
+
+        return $this->get($request,$response,$args);
 
     }
 
+    private function GET(Request $request, Response $response, array $args = []){
+
+        $user = $this->session->get('user');
+        $owner = $user->userinfo->tokeninfo->userId;
+
+        $owner="0629a012-69f3-45d0-88b5-a7c4527c828e";
+
+        try{
+            $res = $this->RegisteredDeviceService->getHosts( $owner  );
+
+        }catch(\Exception $e){
+
+            if($e->getCode()=="42S02"){
+                $this->RegisteredDeviceService->createTable();
+                $res = $this->RegisteredDeviceService->getHosts( $owner );
+            }else{
+                throw new \Exception($e->getMessage(),$e->getCode());
+            }
+
+
+        }
+        //$res = $this->RegisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
+        $response->getBody()->write(json_encode($res));
+
+        return $response->withHeader('Content-Type', 'application/json');
+    }
 
 
     private function POST(Request $request, Response $response, array $args = []){
 
         #$ipadress = $request->getQueryParams()['ipadress'];
+
+
+        $user = $this->session->get('user');
+        $owner = $user->userinfo->tokeninfo->userId;
 
         # deviceid
 
@@ -88,7 +125,7 @@ class RegisteredDeviceController extends AbstractTwigController
 
         }
 
-        $ipAddress = $request->getAttribute('ip_address');
+        #$ipAddress = $request->getAttribute('ip_address');
 
         $data = (array)$request->getParsedBody();
 
@@ -109,28 +146,28 @@ class RegisteredDeviceController extends AbstractTwigController
         $res = array(
             "eth0"=> $net1,
             "eth1"=> $net2,
-            "extip"=>$ipAddress,
+            "int-ip"=>$net2[0],
             "h"=>$request->getHeader("User-Agent"),
             "deviceid"=>$deviceid );
 
 
-
-
         try{
-            $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress,$deviceid);
-        }catch(\Exception $e){
+            //$intIP,$owner,$deviceid
+            $this->RegisteredDeviceService->setIpInDb($net2[0],$owner,$deviceid);
 
-            if($e->getCode()=="42S02"){
-                $this->UnregisteredDeviceService->createTable();
-                $this->UnregisteredDeviceService->setIpInDb($net2[0],$ipAddress,$deviceid);
+        }catch(\Exception $e){
+            #throw new \Exception($e->getMessage(),$e->getCode());
+
+            if($e->getCode()=="42S02" ||$e->getCode()=="42"  ){
+                #
+                $this->RegisteredDeviceService->createTable();
+                $this->RegisteredDeviceService->setIpInDb($net2[0],$ipAddress,$deviceid);
             }else{
                 throw new \Exception($e->getMessage(),$e->getCode());
             }
 
-
         }
-
-        $this->UnregisteredDeviceService->deleteStaleRecords();
+        $this->RegisteredDeviceService->deleteStaleRecords();
 
         $response->getBody()->write(json_encode($res));
 
