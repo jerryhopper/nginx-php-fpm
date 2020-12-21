@@ -1,0 +1,25 @@
+{% extends 'html.twig' %}
+
+{% block contents %}
+
+    <h1>
+        My Device
+    </h1>
+
+    <div class="devices-row">
+
+
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script >
+        $("document").ready(function(){
+            window.showonly="registered";
+            deviceinit();
+
+        });
+    </script>
+{% endblock %}

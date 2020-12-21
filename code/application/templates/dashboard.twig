@@ -13,5 +13,17 @@
 
 
 
+<pre>{{ dump(user) }}</pre>
 
+{% endblock %}
+
+
+{% block scripts %}
+    <script >
+        $("document").ready(function(){
+            window.showonly="unregistered";
+            devicedashboardinit();
+
+        });
+    </script>
 {% endblock %}
