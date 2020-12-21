@@ -4,6 +4,7 @@
 namespace App\Service;
 
 
+use App\Database\Models\RegisteredDevice;
 use App\Database\Models\UnregisteredDevice;
 use App\Database\Schemas\UnregisteredDeviceSchema;
 use Illuminate\Support\Carbon;
