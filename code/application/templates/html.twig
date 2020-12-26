@@ -25,85 +25,57 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
             <ul class="navbar-nav mr-auto">
-                {% if not user %}
-                    <!---
-                <li class="nav-item{% if is_current_url('login') %} active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('login') }}">
-                        Login
-                        {% if is_current_url('login') %}
+                {% if not runtime['isAuthenticated'] %}
+                <li class="nav-item{% if is_current_url('home') %} active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('home') }}">
+                        home
+                        {% if is_current_url('home') %}
                             <span class="sr-only">(current)</span>
                         {% endif %}
                     </a>
                 </li>
-                --->
                 {% else %}
-                    <li class="nav-item{% if is_current_url('dashboard') %} active{% endif %}">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">
-                            Dashboard
-                            {% if is_current_url('dashboard') %}
-                                <span class="sr-only">(current)</span>
-                            {% endif %}
-                        </a>
-                    </li>
-                    <li class="nav-item{% if is_current_url('myapps') %} active{% endif %}">
-                        <a class="nav-link" href="{{ url_for('myapps') }}">
-                            Myapps
-                            {% if is_current_url('myapps') %}
-                                <span class="sr-only">(current)</span>
-                            {% endif %}
-                        </a>
-                    </li>
-                    <li class="nav-item{% if is_current_url('myboxes') %} active{% endif %}">
-                        <a class="nav-link" href="{{ url_for('myboxes') }}">
-                            Myboxes
-                            {% if is_current_url('myboxes') %}
-                                <span class="sr-only">(current)</span>
-                            {% endif %}
-                        </a>
-                    </li>
-                    <!---
-                <li class="nav-item{% if is_current_url('logout') %} active{% endif %}">
-                    <a class="nav-link" href="{{ url_for('logout') }}">
-                        Logout
-                        {% if is_current_url('logout') %}
+
+                <li class="nav-item{% if is_current_url('dashboard') %} active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('dashboard') }}">
+                        dashboard
+                        {% if is_current_url('dashboard') %}
                             <span class="sr-only">(current)</span>
                         {% endif %}
                     </a>
                 </li>
-                --->
-
-
+                <li class="nav-item{% if is_current_url('myapps') %} active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('myapps') }}">
+                        Myapps
+                        {% if is_current_url('myapps') %}
+                            <span class="sr-only">(current)</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item{% if is_current_url('myboxes') %} active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('myboxes') }}">
+                        Myboxes
+                        {% if is_current_url('myboxes') %}
+                            <span class="sr-only">(current)</span>
+                        {% endif %}
+                    </a>
+                </li>
                 {% endif %}
-                <!---
-                <li class="nav-item{ % if is_current_url('hello', {name: 'Slim'}) %} active{ % endif %}">
-                    <a class="nav-link" href="{ { url_for('hello', {name: 'Slim'}) }}">
-                        Hello Slim
-                        { % if is_current_url('hello', {name: 'Slim'}) %}
-                            <span class="sr-only">(current)</span>
-                        { % endif %}
-                    </a>
-                </li>
-                <li class="nav-item{ % if is_current_url('exception-demo') %} active{ % endif %}">
-                    <a class="nav-link" href="{ { url_for('exception-demo') }}">
-                        Exception Demo
-                        { % if is_current_url('exception-demo') %}
-                            <span class="sr-only">(current)</span>
-                        { % endif %}
-                    </a>
-                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>--->
             </ul>
 
             <form class="form-inline my-2 my-lg-0"  onsubmit="preventDefault()">
-                <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-                {% if not user %}
-                    <a class="btn btn-outline-danger my-2 my-sm-0" type="submit" href="{{ authorizationUrl }}">Login</a>
-                {% else %}
-                    <a class="btn btn-outline-success my-2 my-sm-0" type="submit" href="{{ url_for('logout') }}">Logout</a>
+                {% if not is_current_url('login') %}
+                    <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
+                    {% if not runtime['isAuthenticated'] %}
+
+                        <a class="btn btn-outline-danger my-2 my-sm-0" type="submit" href="{{ url_for('login')  }}">Login</a>
+
+                    {% else %}
+                        <a class="btn btn-outline-success my-2 my-sm-0" type="submit" href="{{ url_for('logout') }}">Logout</a>
+                    {% endif %}
                 {% endif %}
             </form>
         </div>
@@ -116,9 +88,11 @@
     {% endblock %}
 </div>
 
+
+
 {% if user %}
     <hr>
-
+usr exists
 
 {% endif %}
 

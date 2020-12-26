@@ -45,12 +45,15 @@ class Preferences
         # Oauth DiscoveryUrl
         $this->oauthDiscoveryurl = $_SERVER["OAUTH_DISCOVERY"] ? $_SERVER["OAUTH_DISCOVERY"] : null;
 
+
         $this->oauthClientid = $_SERVER["OAUTH_CLIENT_ID"] ? $_SERVER["OAUTH_CLIENT_ID"] : null;
         $this->oauthClientsecret = $_SERVER["OAUTH_CLIENT_SECRET"] ? $_SERVER["OAUTH_CLIENT_SECRET"] : null;
 
         $this->oauthTenantid = $_SERVER["OAUTH_TENANT_ID"] ? $_SERVER["OAUTH_TENANT_ID"] : null;
 
         $this->oauthRedirectUrl = $_SERVER["OAUTH_REDIR_URL"] ? $_SERVER["OAUTH_REDIR_URL"] : null;
+
+
 
         # Database
         $this->db_host = $_SERVER["DB_HOST"] ? $_SERVER["DB_HOST"] : null;
@@ -185,4 +188,5 @@ class Preferences
     {
         return $this->oauthTenantid;
     }
+
 }

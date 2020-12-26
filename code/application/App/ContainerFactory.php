@@ -26,6 +26,8 @@ class ContainerFactory
         $containerBuilder->addDefinitions($rootPath . '/application/config/container-definitions.php');
         $containerBuilder->addDefinitions($rootPath . '/application/config/container-controllers.php');
 
+
+
         // Note: In production, you should enable container-compilation.
         // $containerBuilder->enableCompilation($rootPath . '/cache');
 

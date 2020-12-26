@@ -22,6 +22,10 @@ use App\Controllers\OauthCallbackController;
 
 #use App\Action\LogoutAction;
 
+use App\Controllers\TestController;
+use App\Middleware\AuthorizationMiddleware;
+use App\Middleware\HttpExceptionMiddleware;
+use App\Middleware\TokenHeaderMiddleware;
 use App\Preferences;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
@@ -32,6 +36,8 @@ use App\Middleware\HttpsMiddleware;
 use App\Middleware\SessionMiddleware;
 use App\Middleware\UserAuthMiddleware;
 use App\Middleware\OauthMiddleware;
+use Symfony\Component\HttpFoundation\Session\Session;
+
 #use Slim\Routing\RouteCollectorProxy;
 
 #error_log($_SERVER['OAUTH_DISCOVERY']);
@@ -73,59 +79,107 @@ $app->getRouteCollector()->setCacheFile(
 // Start the session
 $app->add(SessionMiddleware::class); // <-- here
 
+$app->add(HttpExceptionMiddleware::class); // <--- here
+
+
 
 //
-$headersToInspect = [
-    'X-Forwarded-For',
-    'X-Real-IP',
-    'HTTP_X_FORWARDED_FOR',
-    'Forwarded',
-];
+$headersToInspect = ['X-Forwarded-For','X-Real-IP','HTTP_X_FORWARDED_FOR','Forwarded',];
 $checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
 $trustedProxies = $app->getContainer()->get(Preferences::class)->getTrustedProxies(); // Note: Never trust the IP address for security processes!
-
-
+// Ip Middleware
 $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies,'ip_address', $headersToInspect ));
+
+
 
 // Add the routing middleware.
 $app->addRoutingMiddleware();
 
 //$app->add(OauthMiddleware::class); // <-- here
+//$app->add(AuthorizationMiddleware::class); // <-- here
+
 
 // Add the twig middleware.
 $app->addMiddleware(
     TwigMiddleware::create($app, $container->get(Twig::class))
-
 );
 
 // Add error handling middleware.
 $displayErrorDetails = true;
 $logErrors = true;
 $logErrorDetails = false;
+
 $app->addErrorMiddleware($displayErrorDetails, $logErrors, $logErrorDetails);
 
 
+$app->group('/', function (RouteCollectorProxy $group) {
+    # home
+    $group->get('', HomeController::class)->setName('home')->setArgument("allow","all");
+
+    # login
+    $group->get( 'login',  LoginController::class)->setName('login')->setArgument("allow","all");
+    # logout
+    $group->get( 'logout', \App\Action\LogoutAction::class)->setName('logout');
+
+
+})->add(AuthorizationMiddleware::class);
+
+$app->group('/dashboard/', function (RouteCollectorProxy $group) {
+    // ...
+    $group->get('device/{id}', MyDeviceController::class)->setName('mydevice')->setArgument("allow","session");
+
+    $group->get('myapps', MyAppsController::class)->setName('myapps')->setArgument("allow","session");;
+
+    $group->get('myboxes', MyBoxesController::class)->setName('myboxes')->setArgument("allow","session");;
+    $group->get('', DashboardController::class)->setName('dashboard')->setArgument("allow","session");
+
+
+})->add(AuthorizationMiddleware::class)->add(HttpsMiddleware::class);
 
 
 
 
 
 
+$app->group('/tests', function (RouteCollectorProxy $group) {
 
+    $group->get('', TestController::class)->setName('home')->setArgument("allow","all");
+    //->setArgument('permission', 'canReadWidgets');
+    //->add( AuthorizationMiddleware::class,AuthorizationMiddleware::allow('all'));
+    $group->get('token',   TestController::class)->setName('home-token')->setArgument("allow","token");
+    $group->get('session', TestController::class)->setName('home-session')->setArgument("allow","session");
+    $group->get('both', TestController::class)->setName('home-both')->setArgument("allow","both");
+    //$group->get('exception-demo', ExceptionDemoController::class)->setName('exception-demo');
+
+
+
+})->add(AuthorizationMiddleware::class);
+
+
+
+$app->group('/oauth2/', function (RouteCollectorProxy $group) {
+    $group->get('callback', TestController::class )->setName('oauth2-callback')->setArgument("allow","all");
+
+})->add(AuthorizationMiddleware::class);
+
+
+
+//->add(AuthorizationMiddleware::class,);
+/*
 
 // Define the app routes.
 $app->group('/', function (RouteCollectorProxy $group) {
 
     # Login
-    $group->get( 'login',  LoginController::class)->setName('login');
-    $group->post('login',  \App\Action\LoginSubmitAction::class)->setName('login-submit');
+    #$group->get( 'login',  LoginController::class)->setName('login');
+    #$group->post('login',  \App\Action\LoginSubmitAction::class)->setName('login-submit');
 
     # Logout
-    $group->get( 'logout', \App\Action\LogoutAction::class)->setName('logout');
+    #$group->get( 'logout', \App\Action\LogoutAction::class)->setName('logout');
 
 
     # Homwpage - landingpage.
-    $group->get('', DashboardController::class)->setName('home')->add(UserAuthMiddleware::class);
+    $group->get('', DashboardController::class)->setName('home');
 
 
 
@@ -135,73 +189,47 @@ $app->group('/', function (RouteCollectorProxy $group) {
     #$group->get('hello/{name}', HelloController::class)->setName('hello');
     #$group->get('exception-demo', ExceptionDemoController::class)->setName('exception-demo');
 
-})->add(HttpsMiddleware::class)->add(OauthMiddleware::class);
+});//->add(HttpsMiddleware::class);//->add(OauthMiddleware::class);
 
+
+*/
 
 $app->group('/api/', function (RouteCollectorProxy $group) {
 
     # Post to update local osboxip, and updates 'running' status online
-    $group->post('registereddevice', RegisteredDeviceController::class)->setName('api-registereddevice');
+    $group->post('registereddevice', RegisteredDeviceController::class)->setName('api-registereddevice')->setArgument("allow","token");
     # Get list of local osbox-ip based on owner id
-    $group->get('registereddevice', RegisteredDeviceController::class)->setName('api-registereddevice');
+    $group->get('registereddevice', RegisteredDeviceController::class)->setName('api-registereddevice')->setArgument("allow","token");
 
     # Post local osbox-ip if unregistred.
-    $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregistereddevice');
+    $group->post('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregistereddevice')->setArgument("allow","all");
     # Get list of local osbox-ip based on external ip
-    $group->get('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregistereddevice');
+    $group->get('unregistereddevice', UnregisteredDeviceController::class)->setName('api-unregistereddevice')->setArgument("allow","all");
 
 
 
     # Creation of dns-name for local ip
-    $group->get('localdns', LocalDnsController::class)->setName('api-localdns');
+    $group->get('localdns', LocalDnsController::class)->setName('api-localdns')->setArgument("allow","all");
 
     # Starts download of certificate.
-    $group->get('localssl', LocalSslController::class)->setName('api-localssl');
+    $group->get('localssl', LocalSslController::class)->setName('api-localssl')->setArgument("allow","all");
 
 
 
 
-    $group->get('devicesetup', DeviceSetupController::class)->setName('api-devicesetup');
-
-
-
-
-
-    $group->get('status', StatusController::class)->setName('api-status')->add(OauthMiddleware::class);
-
-
-
-})->add(HttpsMiddleware::class);
-
-
-//$app->get('/status', StatusController::class)->setName('api-status')->add(OauthMiddleware::class);
-
-
-
-$app->group('/dashboard/', function (RouteCollectorProxy $group) {
-    // ...
-    $group->get('device/{id}', MyDeviceController::class)->setName('mydevice');
-
-
-    $group->get('myapps', MyAppsController::class)->setName('myapps');
-
-    $group->get('myboxes', MyBoxesController::class)->setName('myboxes');
-    $group->get('', DashboardController::class)->setName('dashboard');
-
-
-})->add(OauthMiddleware::class)->add(HttpsMiddleware::class);
-//
+    $group->get('devicesetup', DeviceSetupController::class)->setName('api-devicesetup')->setArgument("allow","all");
 
 
 
 
 
+    $group->get('status', StatusController::class)->setName('api-status');//->setArgument("allow","all");
 
 
 
-$app->group('/oauth2/', function (RouteCollectorProxy $group) {
-    $group->get('callback', \App\Action\OauthCallbackAction::class)->setName('oauth2-callback');
-})->add(HttpsMiddleware::class);
+})->add(AuthorizationMiddleware::class)->add(HttpsMiddleware::class);
+
+
 
 
 

@@ -22,13 +22,14 @@
     "nyholm/psr7-server": "^0.4",
     "php-di/php-di": "^6",
     "monolog/monolog": "^2.0",
-    "jerryhopper/service-discovery-php": "^0.1.11",
+    "jerryhopper/service-discovery-php": "^0.1.12",
+    "jerryhopper/easy-jwt-php": "^0.0.7",
     "symfony/http-foundation": "^5.2",
-    "acmephp/core": "^1.2",
     "league/oauth2-client": "^2.6",
     "jerryhopper/oauth2-fusionauth": "^0.0.2",
     "akrabat/ip-address-middleware": "^2.0",
-    "illuminate/database": "^7.30"
+    "illuminate/database": "^7.30",
+    "aura/accept": "^2.2"
   },
   "autoload-dev": {
     "psr-4": {
