@@ -10,9 +10,11 @@ use App\Controllers\ExceptionDemoController;
 use App\Controllers\HelloController;
 use App\Controllers\HomeController;
 use App\Controllers\LoginController;
+use App\Controllers\TestController;
 use App\Preferences;
 
 
+use App\Runtime;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
@@ -29,6 +31,42 @@ return array(
         return new ExceptionDemoController();
     },
 
+    StatusController::class => function (ContainerInterface $container): StatusController {
+        return new StatusController(
+            $container->get(Twig::class),
+            $container->get(Runtime::class),
+            $container->get(Capsule::class)
+        );
+    },
+
+    /*
+    TestController::class => function (ContainerInterface $container): TestController {
+        error_log("TestController::class | return new TestController(...)");
+        return new TestController(
+            $container->get(Twig::class),
+            $container->get(Runtime::class)
+        );
+    },
+
+
+
+
+
+
+
+
+
+/*
+    TestController::class => function (ContainerInterface $container): TestController {
+        return new TestController(
+            $container->get(Twig::class),
+            $container->get(Preferences::class),
+            $container->get(Session::class),
+            $container->get(FusionAuth::class)
+        );
+    },
+
+
     LocalDnsController::class => function (ContainerInterface $container): LocalDnsController {
         return new LocalDnsController(
             $container->get(Twig::class),
@@ -38,15 +76,7 @@ return array(
             $container->get(Capsule::class)
         );
     },
-    StatusController::class => function (ContainerInterface $container): StatusController {
-        return new StatusController(
-            $container->get(Twig::class),
-            $container->get(Preferences::class),
-            $container->get(Session::class),
-            $container->get(FusionAuth::class),
-            $container->get(Capsule::class)
-        );
-    },
+
     UnregisteredDeviceController::class => function (ContainerInterface $container): UnregisteredDeviceController {
         return new UnregisteredDeviceController(
             $container->get(Twig::class),
@@ -75,7 +105,7 @@ HelloController::class => function (ContainerInterface $container): HelloControl
         $container->get(Session::class),
         $container->get(FusionAuth::class)
     );
-},*/
+},* /
 
     LoginController::class => function (ContainerInterface $container): LoginController {
         return new LoginController(
@@ -85,15 +115,8 @@ HelloController::class => function (ContainerInterface $container): HelloControl
             $container->get(FusionAuth::class)
         );
     },
+*/
 
-    HomeController::class => function (ContainerInterface $container): HomeController {
-        return new HomeController(
-            $container->get(Twig::class),
-            $container->get(Preferences::class),
-            $container->get(Session::class),
-            $container->get(FusionAuth::class)
-        );
-    }
 
     /*,
 
