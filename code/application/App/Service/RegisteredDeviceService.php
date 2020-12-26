@@ -34,7 +34,7 @@ class RegisteredDeviceService
     public function getHosts($ownerId){
 
         $array = array();
-        foreach( RegisteredDevice::where('id', $ownerId)->get() as $item){
+        foreach( RegisteredDevice::where('owner', $ownerId)->get() as $item){
             $array[] = str_replace(".","-",$item['int-ip']).".ssl.dockbox.nl";
         }
         return $array;
