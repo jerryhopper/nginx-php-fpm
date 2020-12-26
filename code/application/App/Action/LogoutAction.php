@@ -30,7 +30,7 @@ final class LogoutAction
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
-        $url =  $routeParser->urlFor('login');
+        $url =  $routeParser->urlFor('home');
 
         return $response->withStatus(302)->withHeader('Location', $url);
     }

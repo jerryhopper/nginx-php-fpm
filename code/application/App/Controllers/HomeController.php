@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Preferences;
 
+use App\Runtime;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
@@ -16,24 +17,23 @@ use JerryHopper\OAuth2\Client\Provider\FusionAuth;
 
 class HomeController extends AbstractTwigController
 {
+
     /**
-     * @var Preferences
+     * @var Runtime
      */
-    private $preferences;
+    private $runtime;
 
     /**
      * HomeController constructor.
      *
      * @param Twig        $twig
-     * @param Preferences $preferences
+     * @param Runtime $runtime
      */
-    public function __construct(Twig $twig, Preferences $preferences,Session $session , FusionAuth $oauthclientProvider )
+    public function __construct(Twig $twig, Runtime $runtime)
     {
         parent::__construct($twig);
-        $this->session = $session;
-        $this->preferences = $preferences;
+        $this->runtime = $runtime;
 
-        $this->oauthclientProvider = $oauthclientProvider;
     }
 
     /**
@@ -45,15 +45,15 @@ class HomeController extends AbstractTwigController
      */
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
-        #$usr = $this->session->get('user');
-        #$usr = $this->session->get('authenticated');
+        // Runtime data (array)
+        $RuntimeData = $this->runtime->data($request->getAttribute('token'));
 
-        return $this->render($response, 'home.twig', [
-            'pageTitle' => 'Home',
-            'authorizationUrl' => $this->oauthclientProvider->getAuthorizationUrl(),
-            'user' => $this->session->all(),
-            'data' => $this->oauthclientProvider->getAuthorizationUrl(),
-            'rootPath' => $this->preferences->getRootPath(),
+
+
+        // return the templae.
+        return $this->render($response, 'dashboard.twig', [
+            'pageTitle' => 'homeController',
+            'runtime'=> $RuntimeData,
         ]);
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Preferences;
+use App\Runtime;
+use JerryHopper\OAuth2\Client\Provider\FusionAuth;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
@@ -13,23 +15,27 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class DashboardController extends AbstractTwigController
 {
     /**
-     * @var Preferences
+     * @var Runtime
      */
-    private $preferences;
+    private $runtime;
 
     /**
-     * LoggedinController constructor.
+     * DashboardController constructor.
      *
      * @param Twig        $twig
-     * @param Preferences $preferences
+     * @param Runtime $runtime
      */
-    public function __construct(Twig $twig, Preferences $preferences,Session $session)
+    public function __construct(Twig $twig, Runtime $runtime)
     {
         parent::__construct($twig);
 
-        $this->session = $session;
+        $this->runtime = $runtime;
 
-        $this->preferences = $preferences;
+
+        #$this->session = $runtime->getSession();
+        #$this->preferences = $runtime->getPreferences();
+        #$this->fusionauth = $runtime->getFusionAuth();
+
     }
 
     /**
@@ -41,12 +47,17 @@ class DashboardController extends AbstractTwigController
      */
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
-        $usr = $this->session->get('user');
+        // Runtime data (array)
+        $RuntimeData = $this->runtime->data($request->getAttribute('token'));
 
+
+
+
+
+        // return the templae.
         return $this->render($response, 'dashboard.twig', [
-            'pageTitle' => 'loggedin',
-            'user' => $usr,
-            'rootPath' => $this->preferences->getRootPath(),
+            'pageTitle' => 'dashboardController',
+            'runtime'=> $RuntimeData,
         ]);
     }
 }

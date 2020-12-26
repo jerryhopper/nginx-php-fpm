@@ -7,7 +7,9 @@ namespace App\Controllers\Api;
 use App\Controllers\AbstractTwigController;
 use App\Preferences;
 
+use App\Runtime;
 use App\Service\CfLocalDns;
+use App\Service\RegisteredDeviceService;
 use App\Service\UnregisteredDeviceService;
 
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
@@ -38,24 +40,28 @@ class StatusController extends AbstractTwigController
     private $UnregisteredDeviceService;
 
     /**
+     * @var RegisteredDeviceService
+     */
+    private $RegisteredDeviceService;
+
+    /**
      * LoginController constructor.
      *
      * @param Twig $twig
      * @param Preferences $preferences
      */
 
-    public function __construct(Twig $twig, Preferences $preferences, Session $session, FusionAuth $oauthclientProvider)
+    public function __construct(Twig $twig,Runtime $runtime, Capsule $capsule)
     {
         parent::__construct($twig);
-        $this->oauthclientProvider = $oauthclientProvider;
-        $this->preferences = $preferences;
-        $this->session = $session;
-        //$this->cflocaldns = new CfLocalDns($this->preferences->getCloudflareToken(), $this->preferences->getCloudflareZoneId());
+        $this->runtime = $runtime;
+
+
+
+        $this->capsule = $capsule;
 
         $this->UnregisteredDeviceService = new UnregisteredDeviceService();
-
-        //
-
+        $this->RegisteredDeviceService = new RegisteredDeviceService();
 
     }
 
@@ -68,6 +74,12 @@ class StatusController extends AbstractTwigController
      */
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
+        // Runtime data (array)
+        $RuntimeData = $this->runtime->data($request->getAttribute('token'));
+
+        $RealIP = $request->getAttribute('ip_address');
+
+
 
         #$ipadress = $request->getQueryParams()['ipadress'];
         #$data = (array)$request->getParsedBody();
@@ -91,9 +103,9 @@ class StatusController extends AbstractTwigController
         }*/
 
         // json_encode($this->session->get('user')['token'] )
-        $devices = array();
+        $UnregisteredDevicesList = array();
         try{
-            $devices = $this->UnregisteredDeviceService->getHosts( $request->getAttribute('ip_address'));
+            $UnregisteredDevicesList = $this->UnregisteredDeviceService->getHosts( $RealIP );
         }catch(\Exception $e ){
             if($e->getCode()=="42S02"){
                 $this->UnregisteredDeviceService->createTable();
@@ -104,11 +116,29 @@ class StatusController extends AbstractTwigController
         }
 
 
+        //print_r( $RuntimeData['token']['payload']['sub'] );
 
 
-        $output = array(    "registered" => array(),
-                            "unregistered"=> $devices ,
-                            "token"=>$this->session->get('user')['token'] );
+        $RegisteredDevicesList = array();
+        try{
+            $RegisteredDevicesList = $this->RegisteredDeviceService->getHosts( $RuntimeData['token']['payload']['sub'] );
+        }catch(\Exception $e ){
+            if($e->getCode()=="42S02"){
+                $this->RegisteredDeviceService->createTable();
+
+            }else{
+                throw new \Exception($e->getMessage());
+            }
+        }
+
+
+
+
+        #print_r($this->runtime->getSession()->get('token')['access_token']);
+        #die();
+        $output = array(    "registered" => $RegisteredDevicesList ,
+                            "unregistered"=> $UnregisteredDevicesList  /*,
+                            "token"=>$this->runtime->getSession()->get('token')['access_token']  */  );
 
         $response->getBody()->write(json_encode( $output ));
 
@@ -121,6 +151,16 @@ class StatusController extends AbstractTwigController
                     'authorizationUrl' => $this->oauthclientProvider->getAuthorizationUrl(),
                     'data' => $this->oauthclientProvider->getAuthorizationUrl(),
                     'rootPath' => $this->preferences->getRootPath(),
-                ]);*/
+                ]);
+
+        // return the templae.
+        return $this->render($response, 'dashboard.twig', [
+            'pageTitle' => 'homeController',
+            'runtime'=> $RuntimeData,
+        ]);
+
+
+
+        */
     }
 }
