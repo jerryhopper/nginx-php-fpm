@@ -6,8 +6,9 @@
 
 
 websocket_response=function(data,osboxwebsocket){
+    console.log(   "websocket_response( data, websocket)");
+    console.log(   "data" , data);
 
-    console.log("command:" +data.text);
 
     switch(data.text) {
         case "osbox status":
@@ -152,12 +153,14 @@ configureDevice = function(device,host){
 }
 
 function createCardsFor($container,device,host,show='unregistered') {
-    console.log("------------------------------------------")
+    console.log("-createCardsFor-"+show+"---------------------------------------")
     //console.log(device);
     //alert(device.hardware);
     if(show=='unregistered' && device['device-state'] == 'registered'){
+        console.log("No card coz device is "+device['device-state']);
         return
     }else if(show=='registered' && device['device-state'] == 'unregistered'){
+        console.log("No card coz device is "+device['device-state']);
         return
     }
 /*
@@ -205,11 +208,11 @@ function createCardsFor($container,device,host,show='unregistered') {
 
 
 polldevice=function(host){
-//console.log("webSocket_test_osbox");
+    console.log("OPEN WEBSOCKET: "+ "wss://"+host+":81/");
     var osboxwebsocket = new WebSocket("wss://"+host+":81/");
 
     osboxwebsocket.onopen = function(evt) {
-        console.log("Attempt to connect to osbox");
+        //console.log("Attempt to connect to osbox");
         //webSocket_writeToScreen("CONNECTED");
         message = "osbox status";
         //webSocket_writeToScreen("SENT: " + message);
@@ -217,14 +220,14 @@ polldevice=function(host){
     };
 
     osboxwebsocket.onclose = function(evt) {
-        console.log("Connection to osbox closed ");
+        console.log("WEBSOCKET Closed");
         //connectAttempts();
         //console.log(wserrors[evt.code]);
         //webSocket_writeToScreen("DISCONNECTED");
     };
 
     osboxwebsocket.onmessage = function(evt) {
-        console.log("onmessage:");
+        console.log("WEBSOCKET RECEIVE");
 
         jsondata = JSON.parse(evt.data)
         var RespData = {}
@@ -257,7 +260,7 @@ polldevice=function(host){
 
     osboxwebsocket.onerror = function(evt) {
         sessionStorage.setItem(host, "unreachable");
-        console.log("Connection to osbox failed");
+        console.log("WEBSOCKET ERROR");
         //console.log(evt);
 
         //webSocket_test_osboxmaster();
@@ -274,6 +277,7 @@ devicedashboardinit = function(){
   // /api/status
     ///api/unregistereddevice
     //sessionStorage.clear();
+    console.log("GET /api/status");
     fetch("/api/status")
         .then((response) => {
             return response.json();
@@ -284,12 +288,13 @@ devicedashboardinit = function(){
             sessionStorage.setItem("token", data.token);
 
 
-
+            console.log("data",data );
+            console.log("Show only: "+ window.showonly );
 
             //let row = $('<div>').addClass('row').prependTo(document.body);
             let row = $('.devices-row').addClass('row');
             for( i in data[ window.showonly ] ){
-                device = polldevice(data.unregistered[i]);
+                device = polldevice(data[window.showonly][i]);
 
             }
 

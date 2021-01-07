@@ -10,6 +10,7 @@ use App\Database\Models\UnregisteredDevice;
 use App\Database\Schemas\UnregisteredDeviceSchema;
 use App\Preferences;
 use App\ProjectCode\CfLocalDns;
+use App\Runtime;
 use App\Service\UnregisteredDeviceService;
 use Illuminate\Support\Carbon;
 use JerryHopper\OAuth2\Client\Provider\FusionAuth;
@@ -47,17 +48,15 @@ class UnregisteredDeviceController extends AbstractTwigController
      * @param Preferences $preferences
      */
 
-    public function __construct(Twig $twig, Preferences $preferences, Session $session, FusionAuth $oauthclientProvider)
+    public function __construct(Twig $twig, Runtime $runtime, Capsule $capsule)
     {
         parent::__construct($twig);
-        $this->oauthclientProvider = $oauthclientProvider;
-        $this->preferences = $preferences;
-        $this->session = $session;
+        #$this->oauthclientProvider = $oauthclientProvider;
+        #$this->preferences = $preferences;
+        #$this->session = $session;
         #$this->cflocaldns = new CfLocalDns($this->preferences->getCloudflareToken(), $this->preferences->getCloudflareZoneId());
 
         $this->UnregisteredDeviceService = new UnregisteredDeviceService();
-
-
 
     }
 

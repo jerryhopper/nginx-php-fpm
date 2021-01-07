@@ -61,7 +61,7 @@ final class AuthorizationMiddleware implements MiddlewareInterface
 
         $parsedUrl = parse_url( $this->preferences->getOauthRedirectUrl() );
 
-        error_log($parsedUrl['path']);
+        #error_log($parsedUrl['path']);
         $this->redirectRoute = $parsedUrl['path'];
 
 
@@ -292,7 +292,7 @@ final class AuthorizationMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
 
-        #error_log("AuthorizationMiddleware::process");
+        error_log("AuthorizationMiddleware::process");
 
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
@@ -316,7 +316,7 @@ final class AuthorizationMiddleware implements MiddlewareInterface
 
 
 
-        error_log("AuthorizationMiddleware::process, Added request->withAttribute('token')");
+        #error_log("AuthorizationMiddleware::process, Added request->withAttribute('token')");
         $request = $request->withAttribute('token',$this->tokenResult);
 
         //var_dump($this->tokenResult);

@@ -38,7 +38,20 @@ return array(
             $container->get(Capsule::class)
         );
     },
-
+    UnregisteredDeviceController::class => function (ContainerInterface $container): UnregisteredDeviceController {
+        return new UnregisteredDeviceController(
+            $container->get(Twig::class),
+            $container->get(Runtime::class),
+            $container->get(Capsule::class)
+        );
+    },
+    RegisteredDeviceController::class => function (ContainerInterface $container): RegisteredDeviceController {
+        return new RegisteredDeviceController(
+            $container->get(Twig::class),
+            $container->get(Runtime::class),
+            $container->get(Capsule::class)
+        );
+    },
     /*
     TestController::class => function (ContainerInterface $container): TestController {
         error_log("TestController::class | return new TestController(...)");
@@ -77,24 +90,7 @@ return array(
         );
     },
 
-    UnregisteredDeviceController::class => function (ContainerInterface $container): UnregisteredDeviceController {
-        return new UnregisteredDeviceController(
-            $container->get(Twig::class),
-            $container->get(Preferences::class),
-            $container->get(Session::class),
-            $container->get(FusionAuth::class),
-            $container->get(Capsule::class)
-        );
-    },
-    RegisteredDeviceController::class => function (ContainerInterface $container): RegisteredDeviceController {
-        return new RegisteredDeviceController(
-            $container->get(Twig::class),
-            $container->get(Preferences::class),
-            $container->get(Session::class),
-            $container->get(FusionAuth::class),
-            $container->get(Capsule::class)
-        );
-    },
+
 
 
     /*

@@ -80,6 +80,9 @@ class StatusController extends AbstractTwigController
         $RealIP = $request->getAttribute('ip_address');
 
 
+ #       print_r($_SERVER);
+#die();
+
 
         #$ipadress = $request->getQueryParams()['ipadress'];
         #$data = (array)$request->getParsedBody();
@@ -102,8 +105,10 @@ class StatusController extends AbstractTwigController
             return $response->withStatus(500);
         }*/
 
+
         // json_encode($this->session->get('user')['token'] )
         $UnregisteredDevicesList = array();
+        error_log("RealIP: $RealIP ");
         try{
             $UnregisteredDevicesList = $this->UnregisteredDeviceService->getHosts( $RealIP );
         }catch(\Exception $e ){

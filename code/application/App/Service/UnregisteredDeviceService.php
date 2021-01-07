@@ -16,7 +16,8 @@ class UnregisteredDeviceService
     }
 
     public function setIpInDb($intIP,$extIP,$deviceid){
-        return UnregisteredDevice::updateOrCreate([    'id' => $extIP."-".$intIP,    'ext-ip' => $extIP,    'int-ip' => $intIP, 'deviceid' => $deviceid ]);
+        error_log("extIP $extIP");
+        return UnregisteredDevice::updateOrCreate(['id' => $extIP."-".$intIP  ],[     'ext-ip' => $extIP,    'int-ip' => $intIP, 'deviceid' => $deviceid ]);
     }
 
     public function deleteStaleRecords(){
