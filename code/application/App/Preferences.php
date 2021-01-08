@@ -38,7 +38,7 @@ class Preferences
 
         # local dev
 
-        $this->localdevelopment = $_SERVER["LOCAL_DEVELOPMENT"] ? true : false;
+        $this->localdevelopmentip = $_SERVER["LOCAL_DEVELOPMENT_IP"] ? $_SERVER["LOCAL_DEVELOPMENT_IP"] : false;
 
 
         # CloudFlare
@@ -77,9 +77,9 @@ class Preferences
      *
      *
      */
-    public function isLocallyHosted(): array
+    public function getLocalDevelopmentIp()
     {
-        return $this->localdevelopment;
+        return $this->localdevelopmentip;
     }
 
     /**
