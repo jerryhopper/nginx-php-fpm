@@ -36,6 +36,10 @@ class Preferences
     {
         $this->rootPath = $rootPath;
 
+        # local dev
+
+        $this->localdevelopment = $_SERVER["LOCAL_DEVELOPMENT"] ? true : false;
+
 
         # CloudFlare
         $this->cloudflareToken = $_SERVER["CF_TOKEN"] ? $_SERVER["CF_TOKEN"] : null;
@@ -68,6 +72,15 @@ class Preferences
 
     }
 
+
+    /**
+     *
+     *
+     */
+    public function isLocallyHosted(): array
+    {
+        return $this->localdevelopment;
+    }
 
     /**
      * @return array
