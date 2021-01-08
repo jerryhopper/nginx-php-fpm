@@ -314,6 +314,9 @@ final class AuthorizationMiddleware implements MiddlewareInterface
             throw new HttpUnauthorizedException($request);
         };
 
+        if( $this->preferences->getLocalDevelopmentIp()!=false ){
+            $request = $request->withAttribute('ip_address',$this->preferences->getLocalDevelopmentIp() );
+        }
 
 
         #error_log("AuthorizationMiddleware::process, Added request->withAttribute('token')");
