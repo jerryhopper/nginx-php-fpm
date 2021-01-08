@@ -80,7 +80,7 @@ class StatusController extends AbstractTwigController
         $RealIP = $request->getAttribute('ip_address');
 
 
- #       print_r($_SERVER);
+#        print_r($RealIP);
 #die();
 
 
@@ -142,7 +142,10 @@ class StatusController extends AbstractTwigController
         #print_r($this->runtime->getSession()->get('token')['access_token']);
         #die();
         $output = array(    "registered" => $RegisteredDevicesList ,
-                            "unregistered"=> $UnregisteredDevicesList  /*,
+                            "unregistered"=> $UnregisteredDevicesList,
+                            "realip"=> $RealIP,
+
+            /*,
                             "token"=>$this->runtime->getSession()->get('token')['access_token']  */  );
 
         $response->getBody()->write(json_encode( $output ));
