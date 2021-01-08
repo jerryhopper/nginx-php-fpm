@@ -122,11 +122,11 @@ class RegisteredDeviceController extends AbstractTwigController
         $tokendata['valid'];
         $tokendata['valid'];
 
-        $owner = $tokendata['payload']->get('sub');
+        $owner = $tokendata['payload']->sub;
 
 
-        var_dump(        $tokendata);
-        die();
+        #var_dump(        $tokendata);
+        #die();
 
         #$user = $this->session->get('user');
         #$owner = $user->userinfo->tokeninfo->userId;
