@@ -51,12 +51,22 @@ class UnregisteredDeviceController extends AbstractTwigController
     public function __construct(Twig $twig, Runtime $runtime, Capsule $capsule)
     {
         parent::__construct($twig);
+
+        $this->runtime=$runtime;
+        // Runtime data (array)
+//        $RuntimeData = $this->runtime->data();
+
+
+
         #$this->oauthclientProvider = $oauthclientProvider;
         #$this->preferences = $preferences;
         #$this->session = $session;
         #$this->cflocaldns = new CfLocalDns($this->preferences->getCloudflareToken(), $this->preferences->getCloudflareZoneId());
 
         $this->UnregisteredDeviceService = new UnregisteredDeviceService();
+
+
+#        isLocallyHosted();
 
     }
 
@@ -112,7 +122,11 @@ class UnregisteredDeviceController extends AbstractTwigController
 
         }
 
+
+
         $ipAddress = $request->getAttribute('ip_address');
+
+
 
         $data = (array)$request->getParsedBody();
 

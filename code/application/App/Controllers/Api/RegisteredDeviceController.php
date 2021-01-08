@@ -59,7 +59,7 @@ class RegisteredDeviceController extends AbstractTwigController
 
         $this->RegisteredDeviceService = new RegisteredDeviceService();
 
-
+        $this->UnregisteredDeviceService = new UnregisteredDeviceService();
 
     }
 
@@ -83,6 +83,7 @@ class RegisteredDeviceController extends AbstractTwigController
         return $this->get($request,$response,$args);
 
     }
+
 
     private function GET(Request $request, Response $response, array $args = []){
 
@@ -116,9 +117,19 @@ class RegisteredDeviceController extends AbstractTwigController
 
         #$ipadress = $request->getQueryParams()['ipadress'];
 
+        $tokendata = $request->getAttribute("token");
 
-        $user = $this->session->get('user');
-        $owner = $user->userinfo->tokeninfo->userId;
+        $tokendata['valid'];
+        $tokendata['valid'];
+
+        $owner = $tokendata['payload']->get('sub');
+
+
+        var_dump(        $tokendata);
+        die();
+
+        #$user = $this->session->get('user');
+        #$owner = $user->userinfo->tokeninfo->userId;
 
         # deviceid
 
@@ -168,7 +179,11 @@ class RegisteredDeviceController extends AbstractTwigController
             }
 
         }
-        $this->RegisteredDeviceService->deleteStaleRecords();
+
+
+        $this->UnregisteredDeviceService->deleteStaleRecords();
+
+        #$this->RegisteredDeviceService->deleteStaleRecords();
 
         $response->getBody()->write(json_encode($res));
 
